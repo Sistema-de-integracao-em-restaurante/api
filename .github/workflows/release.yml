@@ -1,0 +1,73 @@
+name: Release workflow
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## Changelog
+
+            ${{ steps.github_release.outputs.changelog }}
+
+            Image available on: https://hub.docker.com/repository/docker/irmaospuc/sistema-de-integracao-em-restaurantes-api
+          draft: false
+          prerelease: false
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          build-args: |
+            RO_VERSION=${{ github.ref_name }}
+            DB_CON_STRING=${{ secrets.DB_CON_STRING_PROD }}
+          tags: |
+            irmaospuc/sistema-de-integracao-em-restaurantes-api:latest
+            irmaospuc/sistema-de-integracao-em-restaurantes-api:${{ github.ref_name }}
+            ghcr.io/Sistema-de-integracao-em-restaurante/api:latest
+            ghcr.io/Sistema-de-integracao-em-restaurante/api:${{ github.ref_name }}
