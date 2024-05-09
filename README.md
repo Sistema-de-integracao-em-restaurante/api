@@ -7,3 +7,5 @@
 # API Integração em restaurantes
 
 API REST responsável por controlar o armazenamento e recuperação de informações dos restaurantes.
+
+É utilizado o [Koyeb](https://app.koyeb.com/) como plataforma de produção para a API e para o banco de dados.
