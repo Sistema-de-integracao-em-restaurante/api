@@ -69,5 +69,5 @@ jobs:
           tags: |
             irmaospuc/sistema-de-integracao-em-restaurantes-api:latest
             irmaospuc/sistema-de-integracao-em-restaurantes-api:${{ github.ref_name }}
-            ghcr.io/Sistema-de-integracao-em-restaurante/api:latest
-            ghcr.io/Sistema-de-integracao-em-restaurante/api:${{ github.ref_name }}
+            ghcr.io/sistema-de-integracao-em-restaurante/api:latest
+            ghcr.io/sistema-de-integracao-em-restaurante/api:${{ github.ref_name }}
