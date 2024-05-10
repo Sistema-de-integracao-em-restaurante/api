@@ -47,8 +47,8 @@ class Prato(Base):
     __tablename__ = 'prato'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    nome = Column(String)
-    preco = Column(Float)
+    nome = Column(String, nullable=False)
+    preco = Column(Float, nullable=False)
     ingredientes: Mapped[List["IngredientePrato"]] = relationship()
     created_at = Column(DateTime, default=func.now())
 

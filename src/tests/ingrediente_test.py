@@ -1,4 +1,4 @@
-from models.ingrediente import Ingrediente
+from entities.models import Ingrediente
 
 
 def test_ingrediente_get(client, session):
