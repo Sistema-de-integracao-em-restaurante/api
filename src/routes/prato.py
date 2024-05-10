@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from models.prato import Prato, IngredientePrato
+from entities.models import Prato, IngredientePrato
 from flask import Blueprint
 
 
@@ -29,9 +29,9 @@ def build_routes(session):
         quantidade_ingrediente = request_data["quantidade_ingrediente"]
         prato = session.query(Prato).filter(Prato.id == id_prato).first()
         ingrediente_prato = \
-            IngredientePrato(idIngrediente=id_ingrediente,
-                             idPrato=id_prato,
-                             quantidadeIngrediente=quantidade_ingrediente)
+            IngredientePrato(id_ingrediente=id_ingrediente,
+                             id_prato=id_prato,
+                             quantidade_ingrediente=quantidade_ingrediente)
         session.add(ingrediente_prato)
         session.commit()
         session.refresh(prato)

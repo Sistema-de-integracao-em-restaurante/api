@@ -21,11 +21,11 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         'ingrediente_prato',
-        sa.Column('idIngrediente', sa.Integer,
+        sa.Column('id_ingrediente', sa.Integer,
                   sa.ForeignKey('ingrediente.id'), primary_key=True),
-        sa.Column('idPrato', sa.Integer,
+        sa.Column('id_prato', sa.Integer,
                   sa.ForeignKey('prato.id'), primary_key=True),
-        sa.Column('quantidadeIngrediente', sa.Integer, nullable=False),
+        sa.Column('quantidade_ingrediente', sa.Integer, nullable=False),
         sa.Column('created_at', sa.DateTime())
     )
 

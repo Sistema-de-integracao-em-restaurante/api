@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from models.ingrediente import Ingrediente
+from entities.models import Ingrediente
 from marshmallow import ValidationError
 from schemas.ingrediente import IngredienteCreationSchema
 from flask import Blueprint

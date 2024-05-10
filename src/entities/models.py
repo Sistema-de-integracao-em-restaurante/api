@@ -10,18 +10,18 @@ Base = declarative_base()
 class IngredientePrato(Base):
     __tablename__ = 'ingrediente_prato'
 
-    idIngrediente: Mapped[int] = mapped_column(ForeignKey("ingrediente.id"),
-                                               primary_key=True)
-    idPrato: Mapped[int] = mapped_column(ForeignKey("prato.id"),
-                                         primary_key=True)
-    quantidadeIngrediente = Column(Integer, nullable=False)
+    id_ingrediente: Mapped[int] = mapped_column(ForeignKey("ingrediente.id"),
+                                                primary_key=True)
+    id_prato: Mapped[int] = mapped_column(ForeignKey("prato.id"),
+                                          primary_key=True)
+    quantidade_ingrediente = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=func.now())
 
     def serialize(self):
         return {
-                'idIngrediente': self.idIngrediente,
-                'idPrato': self.idPrato,
-                'quantidadeIngreiente': self.quantidadeIngrediente,
+                'id_ingrediente': self.id_ingrediente,
+                'id_prato': self.id_prato,
+                'quantidade_ingrediente': self.quantidade_ingrediente,
                 'created_at': self.created_at
         }
 
