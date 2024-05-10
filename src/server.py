@@ -22,17 +22,18 @@ def build_app(session):
 
     @app.post("/ingrediente")
     def set_ingrediente():
-        nome = request.args.get('nome')
-        descricao = request.args.get('descricao')
+        nome = request.json["nome"]
+        descricao = request.json["descricao"]
         ingrediente = Ingrediente(nome=nome, descricao=descricao)
         session.add(ingrediente)
         session.commit()
-        return "Ingrediente criado com sucesso!"
+        session.refresh(ingrediente)
+        return jsonify(ingrediente.serialize())
 
     return app
 
 
-engine = create_engine(os.getenv("DB_CON_STRING", ""))
+engine = create_engine(os.getenv("DB_CON_STRING", "sqlite:///example.db"))
 Session = sessionmaker(bind=engine)
 session = Session()
 app = build_app(session)

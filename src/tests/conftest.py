@@ -1,14 +1,11 @@
 import pytest
-from unittest.mock import Mock
+from unittest.mock import MagicMock
 from server import build_app
 
 
 @pytest.fixture()
 def session():
-    session = Mock()
-    session.add = Mock()
-    session.commit = Mock()
-    session.query = Mock()
+    session = MagicMock()
     return session
 
 
