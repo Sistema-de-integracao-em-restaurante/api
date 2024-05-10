@@ -27,4 +27,4 @@ jobs:
         run: flake8 *.py
 
       - name: Run tests
-        run: coverage run -m pytest
+        run: coverage run -m pytest --cov
