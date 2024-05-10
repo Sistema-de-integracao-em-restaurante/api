@@ -6,7 +6,7 @@ from flask import Blueprint
 
 
 def build_routes(session):
-    bp = Blueprint('bp', __name__)
+    bp = Blueprint('bp_ingrediente', __name__)
 
     @bp.get("/ingrediente")
     def get_ingredientes():

@@ -2,13 +2,15 @@ import os
 from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from routes.ingrediente import build_routes
+from routes.ingrediente import build_routes as build_ingrediente_routes
+from routes.prato import build_routes as build_prato_routes
 
 
 def build_app(session):
     app = Flask(__name__)
 
-    app.register_blueprint(build_routes(session))
+    app.register_blueprint(build_ingrediente_routes(session))
+    app.register_blueprint(build_prato_routes(session))
 
     @app.route("/")
     def display_app_data():

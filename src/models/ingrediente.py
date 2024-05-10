@@ -8,7 +8,7 @@ class Ingrediente(Base):
     __tablename__ = 'ingrediente'
 
     id = Column(Integer, primary_key=True)
-    nome = Column(String)
+    nome = Column(String, nullable=False)
     descricao = Column(Integer)
     created_at = Column(DateTime, default=func.now())
 
