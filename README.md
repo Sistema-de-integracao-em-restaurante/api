@@ -36,6 +36,10 @@ Resultado:
 
 ```
 
+### Documentação
+
+A API possui documentação publicada no [GitBook](https://4irmaospucs-organization.gitbook.io/api-ingteracao-em-restaurantes/).
+
 ## Desenvolvimento
 
 ```bash

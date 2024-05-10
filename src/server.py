@@ -30,6 +30,14 @@ def build_app(session):
         session.refresh(ingrediente)
         return jsonify(ingrediente.serialize())
 
+    @app.delete("/ingrediente/<int:id>")
+    def delete_ingrediente(id: int):
+        ingrediente = session.query(Ingrediente).filter(
+                Ingrediente.id == id).first()
+        session.delete(ingrediente)
+        session.commit()
+        return jsonify(ingrediente.serialize())
+
     return app
 
 
