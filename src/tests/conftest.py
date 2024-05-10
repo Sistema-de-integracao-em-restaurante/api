@@ -1,9 +1,20 @@
 import pytest
-from server import app as flask_app
+from unittest.mock import Mock
+from server import build_app
 
 
 @pytest.fixture()
-def app():
+def session():
+    session = Mock()
+    session.add = Mock()
+    session.commit = Mock()
+    session.query = Mock()
+    return session
+
+
+@pytest.fixture()
+def app(session):
+    flask_app = build_app(session)
     flask_app.config.update({
         "TESTING": True,
     })

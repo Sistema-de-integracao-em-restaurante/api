@@ -11,7 +11,7 @@ COPY src/ .
 # Stage 2: Optmized deploy-ready image
 FROM python:3.9-slim
 WORKDIR /var/app/
-ARG DB_CON_STRING=""
+ARG DB_CON_STRING="sqlite:///example.db"
 ARG RO_VERSION="v0.0.0"
 ENV DB_CON_STRING=${DB_CON_STRING}
 ENV RO_VERSION=${RO_VERSION}
