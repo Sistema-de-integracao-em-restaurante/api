@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.ingrediente import Ingrediente
+from marshmallow import ValidationError
+from schemas.ingrediente import IngredienteCreationSchema
 
 
 def build_app(session):
@@ -20,10 +22,21 @@ def build_app(session):
         ingredientes = session.query(Ingrediente).all()
         return jsonify([i.serialize() for i in ingredientes])
 
+    @app.get("/ingrediente/<int:id>")
+    def get_ingrediente_by_id(id: int):
+        ingrediente = session.query(Ingrediente).filter(
+                Ingrediente.id == id).first()
+        return jsonify(ingrediente.serialize())
+
     @app.post("/ingrediente")
     def set_ingrediente():
-        nome = request.json["nome"]
-        descricao = request.json["descricao"]
+        try:
+            request_data = IngredienteCreationSchema().load(request.json)
+        except ValidationError as err:
+            return jsonify(err.messages), 400
+
+        nome = request_data["nome"]
+        descricao = request_data["descricao"]
         ingrediente = Ingrediente(nome=nome, descricao=descricao)
         session.add(ingrediente)
         session.commit()
@@ -34,6 +47,9 @@ def build_app(session):
     def delete_ingrediente(id: int):
         ingrediente = session.query(Ingrediente).filter(
                 Ingrediente.id == id).first()
+        if not ingrediente:
+            return "Ingrediente nao encontrado", 404
+
         session.delete(ingrediente)
         session.commit()
         return jsonify(ingrediente.serialize())
