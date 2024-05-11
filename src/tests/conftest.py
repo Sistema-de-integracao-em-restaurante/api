@@ -4,14 +4,14 @@ from server import build_app
 
 
 @pytest.fixture()
-def session():
-    session = MagicMock()
-    return session
+def session_scope():
+    session_scope = MagicMock()
+    return session_scope
 
 
 @pytest.fixture()
-def app(session):
-    flask_app = build_app(session)
+def app(session_scope):
+    flask_app = build_app(session_scope)
     flask_app.config.update({
         "TESTING": True,
     })

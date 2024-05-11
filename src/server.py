@@ -1,16 +1,16 @@
 import os
 from flask import Flask
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from routes.ingrediente import build_routes as build_ingrediente_routes
 from routes.prato import build_routes as build_prato_routes
+from entities.session import session_scope
+from flask_cors import CORS
 
 
-def build_app(session):
+def build_app(session_scope):
     app = Flask(__name__)
 
-    app.register_blueprint(build_ingrediente_routes(session))
-    app.register_blueprint(build_prato_routes(session))
+    app.register_blueprint(build_ingrediente_routes(session_scope))
+    app.register_blueprint(build_prato_routes(session_scope))
 
     @app.route("/")
     def display_app_data():
@@ -21,14 +21,13 @@ def build_app(session):
 
     @app.errorhandler(500)
     def error_handler_500(e):
-        session.rollback()
-        return {"error": "Aconteceu um erro durante o processamento da "
-                "requisicao. Tente novamente mais tarde"}, 500
+        with session_scope() as session:
+            session.rollback()
+            return {"error": "Aconteceu um erro durante o processamento da "
+                    "requisicao. Tente novamente mais tarde"}, 500
 
     return app
 
 
-engine = create_engine(os.getenv("DB_CON_STRING", "sqlite:///example.db"))
-Session = sessionmaker(bind=engine)
-session = Session()
-app = build_app(session)
+app = build_app(session_scope)
+CORS(app, resources=r'*')

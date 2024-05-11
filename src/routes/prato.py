@@ -1,26 +1,28 @@
 from flask import jsonify, request
-from entities.models import Prato, IngredientePrato
+from entities.models import Prato, IngredientePrato, Ingrediente
 from marshmallow import ValidationError
 from schemas.prato import PratoCreationSchema
 from schemas.ingredienteprato import IngredientePratoCreationSchema
 from flask import Blueprint
 
 
-def build_routes(session):
+def build_routes(session_scope):
     bp = Blueprint('bp_prato', __name__)
 
     @bp.get("/prato")
     def get_pratos():
-        pratos = session.query(Prato).all()
-        return jsonify([p.serialize() for p in pratos])
+        with session_scope() as session:
+            pratos = session.query(Prato).all()
+            return jsonify([p.serialize() for p in pratos])
 
     @bp.get("/prato/<int:id>")
     def get_prato_by_id(id: int):
-        prato = session.query(Prato).filter(
-                Prato.id == id).first()
-        if not prato:
-            return {"error": "Prato nao encontrado"}, 404
-        return jsonify(prato.serialize())
+        with session_scope() as session:
+            prato = session.query(Prato).filter(
+                    Prato.id == id).first()
+            if not prato:
+                return {"error": "Prato nao encontrado"}, 404
+            return jsonify(prato.serialize())
 
     @bp.post("/prato")
     def set_prato():
@@ -32,31 +34,35 @@ def build_routes(session):
         nome = request_data["nome"]
         preco = request_data["preco"]
         prato = Prato(nome=nome, preco=preco)
-        session.add(prato)
-        session.commit()
-        session.refresh(prato)
-        return jsonify(prato.serialize())
+
+        with session_scope() as session:
+            session.add(prato)
+            session.commit()
+            session.refresh(prato)
+            return jsonify(prato.serialize())
 
     @bp.delete("/prato/<int:id>")
     def delete_prato(id: int):
-        prato = session.query(Prato).filter(Prato.id == id).first()
-        if not prato:
-            return {"error": "Prato nao encontrado"}, 404
+        with session_scope() as session:
+            prato = session.query(Prato).filter(Prato.id == id).first()
+            if not prato:
+                return {"error": "Prato nao encontrado"}, 404
 
-        session.query(IngredientePrato).filter(
-                IngredientePrato.id_prato == id).delete()
+            session.query(IngredientePrato).filter(
+                    IngredientePrato.id_prato == id).delete()
 
-        session.delete(prato)
-        session.commit()
-        return jsonify(prato.serialize())
+            session.delete(prato)
+            session.commit()
+            return jsonify(prato.serialize())
 
     @bp.get("/prato/<int:id>/ingrediente")
     def get_ingrediente_prato_by_id(id: int):
-        prato = session.query(Prato).filter(
-                Prato.id == id).first()
-        if not prato:
-            return {"error": "Prato nao encontrado"}, 404
-        return jsonify([i.serialize() for i in prato.ingredientes])
+        with session_scope() as session:
+            prato = session.query(Prato).filter(
+                    Prato.id == id).first()
+            if not prato:
+                return {"error": "Prato nao encontrado"}, 404
+            return jsonify([i.serialize() for i in prato.ingredientes])
 
     @bp.post("/prato/<int:id_prato>/ingrediente")
     def set_ingrediente_prato(id_prato: int):
@@ -67,30 +73,38 @@ def build_routes(session):
 
         id_ingrediente = request_data["id_ingrediente"]
         quantidade_ingrediente = request_data["quantidade_ingrediente"]
-        prato = session.query(Prato).filter(Prato.id == id_prato).first()
-        if not prato:
-            return {"error": "Prato nao encontrado"}, 404
 
-        ingrediente_prato = \
-            IngredientePrato(id_ingrediente=id_ingrediente,
-                             id_prato=id_prato,
-                             quantidade_ingrediente=quantidade_ingrediente)
-        session.add(ingrediente_prato)
-        session.commit()
-        session.refresh(prato)
-        return jsonify(prato.serialize())
+        with session_scope() as session:
+            prato = session.query(Prato).filter(Prato.id == id_prato).first()
+            if not prato:
+                return {"error": "Prato nao encontrado"}, 404
+
+            ingrediente = session.query(Ingrediente).filter(
+                    Ingrediente.id == id_ingrediente).first()
+            if not ingrediente:
+                return {"error": "Ingrediente nao encontrado"}, 404
+
+            ingrediente_prato = \
+                IngredientePrato(id_ingrediente=id_ingrediente,
+                                 id_prato=id_prato,
+                                 quantidade_ingrediente=quantidade_ingrediente)
+            session.add(ingrediente_prato)
+            session.commit()
+            session.refresh(prato)
+            return jsonify(prato.serialize())
 
     @bp.delete("/prato/<int:id_prato>/ingrediente/<int:id_ingrediente>")
     def delete_ingrediente_prato(id_prato: int, id_ingrediente: int):
-        ingrediente_prato = session.query(IngredientePrato).filter(
-                IngredientePrato.id_prato == id_prato and
-                IngredientePrato.id_ingrediente == id_ingrediente).first()
-        if not ingrediente_prato:
-            return {"error": "Relacionamento entre prato e "
-                    "ingrediente nao encontrado"}, 404
+        with session_scope() as session:
+            ingrediente_prato = session.query(IngredientePrato).filter(
+                    IngredientePrato.id_prato == id_prato and
+                    IngredientePrato.id_ingrediente == id_ingrediente).first()
+            if not ingrediente_prato:
+                return {"error": "Relacionamento entre prato e "
+                        "ingrediente nao encontrado"}, 404
 
-        session.delete(ingrediente_prato)
-        session.commit()
-        return jsonify(ingrediente_prato.serialize())
+            session.delete(ingrediente_prato)
+            session.commit()
+            return jsonify(ingrediente_prato.serialize())
 
     return bp
