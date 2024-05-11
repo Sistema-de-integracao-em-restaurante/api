@@ -36,4 +36,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         with:
           name: coverage.svg
-          path: ./coverage.svg
+          path: ./src/coverage.svg
