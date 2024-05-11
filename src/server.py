@@ -9,7 +9,6 @@ from flask_cors import CORS
 def build_app(session_scope, cors_resources={r'/api/*': {'origins': '*'}}):
     app = Flask(__name__)
     CORS(app, resources=cors_resources, supports_credentials=True)
-    app.config['CORS_HEADERS'] = 'Content-Type'
 
     with app.app_context():
         app.register_blueprint(
