@@ -30,7 +30,7 @@ jobs:
         run: coverage run -m pytest
 
       - name: Create coverage svg
-        run: coverge-badge -o coverage.svg
+        run: coverage-badge -o coverage.svg
 
       - run: mkdir coverage/ && cp coverage.svg coverage/.
 
