@@ -42,7 +42,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./_coverage
+          path: "_coverage"
 
   deploy-coverage:
     if: github.ref == 'refs/heads/main'
