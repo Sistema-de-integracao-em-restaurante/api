@@ -19,6 +19,12 @@ def build_app(session):
                 "version": os.getenv("RO_VERSION", "v0.0.0")
         }
 
+    @app.errorhandler(500)
+    def error_handler_500(e):
+        session.rollback()
+        return {"error": "Aconteceu um erro durante o processamento da "
+                "requisicao. Tente novamente mais tarde"}, 500
+
     return app
 
 
