@@ -25,7 +25,6 @@ def build_routes(session_scope):
             return jsonify(ingrediente.serialize())
 
     @bp.route("", methods=["POST"])
-    @cross_origin(origin="*", headers=['Content-Type'])
     def set_ingrediente():
         try:
             request_data = IngredienteCreationSchema().load(request.json)
