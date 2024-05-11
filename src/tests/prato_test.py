@@ -3,7 +3,7 @@ from unittest import mock
 
 
 def test_prato_get(client, session_scope):
-    response = client.get("/prato")
+    response = client.get("/api/prato")
 
     with session_scope() as session:
         pass
@@ -23,7 +23,7 @@ def test_prato_get_by_id(client, session_scope):
            .first.return_value \
            .serialize.return_value = prato_to_search.serialize()
 
-    response = client.get("/prato/1")
+    response = client.get("/api/prato/1")
 
     session.query.assert_called_once_with(Prato)
     session.query().filter.assert_called_once()
@@ -35,7 +35,7 @@ def test_prato_get_by_id(client, session_scope):
 
 def test_prato_set(client, session_scope):
     response = client.post(
-            "/prato",
+            "/api/prato",
             json={"nome": "Prato", "preco": 20.2})
 
     with session_scope() as session:
@@ -51,7 +51,7 @@ def test_prato_set(client, session_scope):
 
 def test_prato_set_withoud_required(client):
     response = client.post(
-            "/prato",
+            "/api/prato",
             json={})
 
     assert response.status_code == 400
@@ -59,7 +59,7 @@ def test_prato_set_withoud_required(client):
 
 def test_prato_set_withoud_required_2(client):
     response = client.post(
-            "/prato",
+            "/api/prato",
             json={"nome": "Prato1"})
 
     assert response.status_code == 400
@@ -75,7 +75,7 @@ def test_prato_delete(client, session_scope):
            .first.return_value \
            .serialize.return_value = prato_to_delete.serialize()
 
-    response = client.delete("/prato/1")
+    response = client.delete("/api/prato/1")
 
     session.query.assert_has_calls(
             [mock.call(Prato), mock.call(IngredientePrato)], any_order=True)
@@ -88,7 +88,7 @@ def test_prato_delete(client, session_scope):
 
 
 def test_ingrediente_prato_get(client, session_scope):
-    response = client.get("/prato/1/ingrediente")
+    response = client.get("/api/prato/1/ingrediente")
 
     with session_scope() as session:
         pass
@@ -108,7 +108,7 @@ def test_ingrediente_prato_set(client, session_scope):
            .first.return_value = prato
 
     response = client.post(
-            "/prato/1/ingrediente",
+            "/api/prato/1/ingrediente",
             json={"id_ingrediente": 1, "quantidade_ingrediente": 2})
 
     session.query.assert_has_calls(
@@ -131,7 +131,7 @@ def test_ingrediente_prato_delete(client, session_scope):
            .first.return_value \
            .serialize.return_value = ingrediente_prato_to_delete.serialize()
 
-    response = client.delete("/prato/1/ingrediente/1")
+    response = client.delete("/api/prato/1/ingrediente/1")
 
     session.query.assert_called_once_with(IngredientePrato)
     session.query().filter.assert_called_once()

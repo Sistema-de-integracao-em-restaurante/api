@@ -7,7 +7,7 @@ from flask import Blueprint
 
 
 def build_routes(session_scope):
-    bp = Blueprint('bp_prato', __name__, url_prefix="/prato")
+    bp = Blueprint('bp_prato', __name__)
 
     @bp.get("")
     def get_pratos():

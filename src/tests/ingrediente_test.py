@@ -2,7 +2,7 @@ from entities.models import Ingrediente
 
 
 def test_ingrediente_get(client, session_scope):
-    response = client.get("/ingrediente")
+    response = client.get("/api/ingrediente")
 
     with session_scope() as session:
         pass
@@ -22,7 +22,7 @@ def test_ingrediente_get_by_id(client, session_scope):
            .first.return_value \
            .serialize.return_value = ingrediente_to_search.serialize()
 
-    response = client.get("/ingrediente/1")
+    response = client.get("/api/ingrediente/1")
 
     session.query.assert_called_once_with(Ingrediente)
     session.query().filter.assert_called_once()
@@ -34,7 +34,7 @@ def test_ingrediente_get_by_id(client, session_scope):
 
 def test_ingrediente_set(client, session_scope):
     response = client.post(
-            "/ingrediente",
+            "/api/ingrediente",
             json={"nome": "Ingrediente", "descricao": "descricao"})
 
     with session_scope() as session:
@@ -50,7 +50,7 @@ def test_ingrediente_set(client, session_scope):
 
 def test_ingrediente_set_withoud_unrequired(client, session_scope):
     response = client.post(
-            "/ingrediente",
+            "/api/ingrediente",
             json={"nome": "Ingrediente"})
 
     with session_scope() as session:
@@ -65,7 +65,7 @@ def test_ingrediente_set_withoud_unrequired(client, session_scope):
 
 def test_ingrediente_set_withoud_required(client):
     response = client.post(
-            "/ingrediente",
+            "/api/ingrediente",
             json={})
 
     assert response.status_code == 400
@@ -81,7 +81,7 @@ def test_ingrediente_delete(client, session_scope):
            .first.return_value \
            .serialize.return_value = ingrediente_to_delete.serialize()
 
-    response = client.delete("/ingrediente/1")
+    response = client.delete("/api/ingrediente/1")
 
     session.query.assert_called_once_with(Ingrediente)
     session.query().filter.assert_called_once()
