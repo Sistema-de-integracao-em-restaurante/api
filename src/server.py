@@ -3,12 +3,12 @@ from flask import Flask, request, jsonify
 from routes.ingrediente import build_routes as build_ingrediente_routes
 from routes.prato import build_routes as build_prato_routes
 from entities.session import session_scope
-from flask_cors import CORS
+# from flask_cors import CORS
 
 
 def build_app(session_scope, cors_resources={r'/api/*': {'origins': '*'}}):
     app = Flask(__name__)
-    CORS(app, resources=cors_resources, supports_credentials=True)
+    # CORS(app, resources=cors_resources, supports_credentials=True)
 
     with app.app_context():
         app.register_blueprint(
