@@ -3,7 +3,7 @@
 <br>
 ![CI](https://github.com/Sistema-de-integracao-em-restaurante/api/actions/workflows/ci.yml/badge.svg)
 ![Release](https://github.com/Sistema-de-integracao-em-restaurante/api/actions/workflows/release.yml/badge.svg)
-[![cov](https://Sistema-de-integracao-em-restaurante.github.io/api/badges/coverage.svg)](https://github.com/Sistema-de-integracao-em-restaurante/api/actions)
+[![cov](https://sistema-de-integracao-em-restaurante.github.io/api/coverage.svg)](https://github.com/Sistema-de-integracao-em-restaurante/api/actions)
 
 # API Integração em restaurantes
 
