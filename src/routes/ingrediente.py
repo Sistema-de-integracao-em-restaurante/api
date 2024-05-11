@@ -6,15 +6,15 @@ from flask import Blueprint
 
 
 def build_routes(session_scope):
-    bp = Blueprint('bp_ingrediente', __name__)
+    bp = Blueprint('bp_ingrediente', __name__, url_prefix="/ingrediente")
 
-    @bp.get("/ingrediente")
+    @bp.get("")
     def get_ingredientes():
         with session_scope() as session:
             ingredientes = session.query(Ingrediente).all()
             return jsonify([i.serialize() for i in ingredientes])
 
-    @bp.get("/ingrediente/<int:id>")
+    @bp.get("<int:id>")
     def get_ingrediente_by_id(id: int):
         with session_scope() as session:
             ingrediente = session.query(Ingrediente).filter(
@@ -23,7 +23,7 @@ def build_routes(session_scope):
                 return {"error": "Ingrediente nao encontrado"}, 404
             return jsonify(ingrediente.serialize())
 
-    @bp.post("/ingrediente")
+    @bp.post("")
     def set_ingrediente():
         try:
             request_data = IngredienteCreationSchema().load(request.json)
@@ -40,7 +40,7 @@ def build_routes(session_scope):
             session.refresh(ingrediente)
             return jsonify(ingrediente.serialize())
 
-    @bp.delete("/ingrediente/<int:id>")
+    @bp.delete("<int:id>")
     def delete_ingrediente(id: int):
         with session_scope() as session:
             ingrediente = session.query(Ingrediente).filter(

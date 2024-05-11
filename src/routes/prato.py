@@ -7,15 +7,15 @@ from flask import Blueprint
 
 
 def build_routes(session_scope):
-    bp = Blueprint('bp_prato', __name__)
+    bp = Blueprint('bp_prato', __name__, url_prefix="/prato")
 
-    @bp.get("/prato")
+    @bp.get("")
     def get_pratos():
         with session_scope() as session:
             pratos = session.query(Prato).all()
             return jsonify([p.serialize() for p in pratos])
 
-    @bp.get("/prato/<int:id>")
+    @bp.get("<int:id>")
     def get_prato_by_id(id: int):
         with session_scope() as session:
             prato = session.query(Prato).filter(
@@ -24,7 +24,7 @@ def build_routes(session_scope):
                 return {"error": "Prato nao encontrado"}, 404
             return jsonify(prato.serialize())
 
-    @bp.post("/prato")
+    @bp.post("")
     def set_prato():
         try:
             request_data = PratoCreationSchema().load(request.json)
@@ -41,7 +41,7 @@ def build_routes(session_scope):
             session.refresh(prato)
             return jsonify(prato.serialize())
 
-    @bp.delete("/prato/<int:id>")
+    @bp.delete("<int:id>")
     def delete_prato(id: int):
         with session_scope() as session:
             prato = session.query(Prato).filter(Prato.id == id).first()
@@ -55,7 +55,7 @@ def build_routes(session_scope):
             session.commit()
             return jsonify(prato.serialize())
 
-    @bp.get("/prato/<int:id>/ingrediente")
+    @bp.get("<int:id>/ingrediente")
     def get_ingrediente_prato_by_id(id: int):
         with session_scope() as session:
             prato = session.query(Prato).filter(
@@ -64,7 +64,7 @@ def build_routes(session_scope):
                 return {"error": "Prato nao encontrado"}, 404
             return jsonify([i.serialize() for i in prato.ingredientes])
 
-    @bp.post("/prato/<int:id_prato>/ingrediente")
+    @bp.post("<int:id_prato>/ingrediente")
     def set_ingrediente_prato(id_prato: int):
         try:
             request_data = IngredientePratoCreationSchema().load(request.json)
@@ -93,7 +93,7 @@ def build_routes(session_scope):
             session.refresh(prato)
             return jsonify(prato.serialize())
 
-    @bp.delete("/prato/<int:id_prato>/ingrediente/<int:id_ingrediente>")
+    @bp.delete("<int:id_prato>/ingrediente/<int:id_ingrediente>")
     def delete_ingrediente_prato(id_prato: int, id_ingrediente: int):
         with session_scope() as session:
             ingrediente_prato = session.query(IngredientePrato).filter(
