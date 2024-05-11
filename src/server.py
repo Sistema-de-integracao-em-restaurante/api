@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, Response, request
 from routes.ingrediente import build_routes as build_ingrediente_routes
 from routes.prato import build_routes as build_prato_routes
 from entities.session import session_scope
@@ -30,6 +30,11 @@ def build_app(session_scope, cors_resources={r'/api/*': {'origins': '*'}}):
             session.rollback()
             return {"error": "Aconteceu um erro durante o processamento da "
                     "requisicao. Tente novamente mais tarde"}, 500
+
+    @app.before_request
+    def basic_authentication():
+        if request.method.lower() == 'options':
+            return Response()
 
     return app
 
