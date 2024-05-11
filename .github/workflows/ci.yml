@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  workflow: write
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -27,4 +30,10 @@ jobs:
         run: flake8 *.py
 
       - name: Run tests
-        run: coverage run -m pytest --cov
+        run: coverage run -m pytest --cov --cov-report json
+
+      - name: Update Coverage Badge
+        # GitHub actions: default branch variable
+        # https://stackoverflow.com/questions/64781462/github-actions-default-branch-variable
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: we-cli/coverage-badge-action@main
