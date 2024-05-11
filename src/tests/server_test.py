@@ -2,7 +2,7 @@ import re
 
 
 def test_default_route(client):
-    response = client.get("/")
+    response = client.get("/api")
     assert response.status_code == 200
     assert response.json["name"] == "Restaurant Order API", \
         "Application name does not match"

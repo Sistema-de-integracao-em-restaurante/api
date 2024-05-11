@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from flask_cors import cross_origin
 from entities.models import Ingrediente
 from marshmallow import ValidationError
 from schemas.ingrediente import IngredienteCreationSchema
@@ -6,7 +7,7 @@ from flask import Blueprint
 
 
 def build_routes(session_scope):
-    bp = Blueprint('bp_ingrediente', __name__, url_prefix="/ingrediente")
+    bp = Blueprint('bp_ingrediente', __name__)
 
     @bp.get("")
     def get_ingredientes():
@@ -24,6 +25,7 @@ def build_routes(session_scope):
             return jsonify(ingrediente.serialize())
 
     @bp.post("")
+    @cross_origin()
     def set_ingrediente():
         try:
             request_data = IngredienteCreationSchema().load(request.json)
