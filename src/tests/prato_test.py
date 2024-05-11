@@ -76,11 +76,30 @@ def test_prato_delete(client, session):
 
 
 def test_ingrediente_prato_get(client, session):
-    client.get("/prato/1/ingrediente")
+    response = client.get("/prato/1/ingrediente")
 
     session.query.assert_called_once_with(Prato)
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
+    assert response.status_code == 200
+
+
+def test_ingrediente_prato_set(client, session):
+    prato = Prato(id=1, nome="Prato", preco=26.4)
+    session.query.return_value.filter.return_value \
+           .first.return_value = prato
+
+    response = client.post(
+            "/prato/1/ingrediente",
+            json={"id_ingrediente": 1, "quantidade_ingrediente": 2})
+
+    session.query.assert_called_once_with(Prato)
+    session.add.assert_called_once()
+    session.commit.assert_called_once()
+    session.refresh.assert_called_once()
+    assert response.status_code == 200
+    assert response.json["nome"] == "Prato"
+    assert response.json["preco"] == 26.4
 
 
 def test_ingrediente_prato_delete(client, session):

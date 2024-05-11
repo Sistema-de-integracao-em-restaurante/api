@@ -18,6 +18,8 @@ def build_routes(session):
     def get_prato_by_id(id: int):
         prato = session.query(Prato).filter(
                 Prato.id == id).first()
+        if not prato:
+            return {"error": "Prato nao encontrado"}, 404
         return jsonify(prato.serialize())
 
     @bp.post("/prato")
@@ -39,7 +41,7 @@ def build_routes(session):
     def delete_prato(id: int):
         prato = session.query(Prato).filter(Prato.id == id).first()
         if not prato:
-            return "Prato nao encontrado", 404
+            return {"error": "Prato nao encontrado"}, 404
 
         session.query(IngredientePrato).filter(
                 IngredientePrato.id_prato == id).delete()
@@ -52,6 +54,8 @@ def build_routes(session):
     def get_ingrediente_prato_by_id(id: int):
         prato = session.query(Prato).filter(
                 Prato.id == id).first()
+        if not prato:
+            return {"error": "Prato nao encontrado"}, 404
         return jsonify([i.serialize() for i in prato.ingredientes])
 
     @bp.post("/prato/<int:id_prato>/ingrediente")
@@ -64,6 +68,9 @@ def build_routes(session):
         id_ingrediente = request_data["id_ingrediente"]
         quantidade_ingrediente = request_data["quantidade_ingrediente"]
         prato = session.query(Prato).filter(Prato.id == id_prato).first()
+        if not prato:
+            return {"error": "Prato nao encontrado"}, 404
+
         ingrediente_prato = \
             IngredientePrato(id_ingrediente=id_ingrediente,
                              id_prato=id_prato,
@@ -79,8 +86,8 @@ def build_routes(session):
                 IngredientePrato.id_prato == id_prato and
                 IngredientePrato.id_ingrediente == id_ingrediente).first()
         if not ingrediente_prato:
-            return "Relacionamento entre prato e " \
-                    "ingrediente nao encontrado", 404
+            return {"error": "Relacionamento entre prato e "
+                    "ingrediente nao encontrado"}, 404
 
         session.delete(ingrediente_prato)
         session.commit()

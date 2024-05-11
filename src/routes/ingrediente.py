@@ -17,6 +17,8 @@ def build_routes(session):
     def get_ingrediente_by_id(id: int):
         ingrediente = session.query(Ingrediente).filter(
                 Ingrediente.id == id).first()
+        if not ingrediente:
+            return {"error": "Ingrediente nao encontrado"}, 404
         return jsonify(ingrediente.serialize())
 
     @bp.post("/ingrediente")
@@ -39,7 +41,7 @@ def build_routes(session):
         ingrediente = session.query(Ingrediente).filter(
                 Ingrediente.id == id).first()
         if not ingrediente:
-            return "Ingrediente nao encontrado", 404
+            return {"error": "Ingrediente nao encontrado"}, 404
 
         session.delete(ingrediente)
         session.commit()
