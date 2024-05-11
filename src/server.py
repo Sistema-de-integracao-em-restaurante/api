@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Response, request
+from flask import Flask, request, jsonify
 from routes.ingrediente import build_routes as build_ingrediente_routes
 from routes.prato import build_routes as build_prato_routes
 from entities.session import session_scope
@@ -32,9 +32,13 @@ def build_app(session_scope, cors_resources={r'/api/*': {'origins': '*'}}):
                     "requisicao. Tente novamente mais tarde"}, 500
 
     @app.before_request
-    def basic_authentication():
+    def before_request():
+        headers = {'Access-Control-Allow-Origin': '*',
+                   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, '
+                   'OPTIONS',
+                   'Access-Control-Allow-Headers': 'Content-Type'}
         if request.method.lower() == 'options':
-            return Response()
+            return jsonify(headers), 200
 
     return app
 
