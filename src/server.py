@@ -11,11 +11,10 @@ def build_app(session_scope):
     bp_ingrediente = build_ingrediente_routes(session_scope)
     bp_prato = build_prato_routes(session_scope)
 
-    cors_resources = {r'/api/*': {'origins': 'http://localhost:3000'}}
+    cors_resources = {r'/api/*': {'origins': 'http://localhost:3000',
+                                  "allow_headers": "*", "expose_headers": "*"}}
 
     CORS(app, resources=cors_resources, supports_credentials=True)
-    CORS(bp_prato, resources=cors_resources, supports_credentials=True)
-    CORS(bp_ingrediente, resources=cors_resources, supports_credentials=True)
 
     with app.app_context():
         app.register_blueprint(bp_ingrediente, url_prefix="/api/ingrediente")
