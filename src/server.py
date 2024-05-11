@@ -6,8 +6,9 @@ from entities.session import session_scope
 from flask_cors import CORS
 
 
-def build_app(session_scope):
+def build_app(session_scope, cors_resources={r"/*": {"origins": "*"}}):
     app = Flask(__name__)
+    CORS(app, resources=cors_resources)
 
     app.register_blueprint(build_ingrediente_routes(session_scope))
     app.register_blueprint(build_prato_routes(session_scope))
@@ -30,4 +31,3 @@ def build_app(session_scope):
 
 
 app = build_app(session_scope)
-CORS(app, resources=r'*')
