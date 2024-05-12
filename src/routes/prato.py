@@ -1,8 +1,8 @@
 from flask import jsonify, request
 from entities.models import Prato, IngredientePrato, Ingrediente
 from marshmallow import ValidationError
-from schemas.prato import PratoCreationSchema
-from schemas.ingredienteprato import IngredientePratoCreationSchema
+from schemas.creation import PratoCreationSchema, \
+    IngredientePratoCreationSchema
 from flask import Blueprint
 
 
