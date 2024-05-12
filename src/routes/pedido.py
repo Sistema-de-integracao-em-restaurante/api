@@ -60,7 +60,7 @@ def build_routes(session_scope):
             pedido = session.query(Pedido).filter(Pedido.id == id).first()
             if not pedido:
                 return {"error": "Pedido nao encontrado"}, 404
-            return jsonify([i.serialize() for i in pedido.pratos])
+            return jsonify([p.serialize() for p in pedido.pratos])
 
     @bp.post("<int:id_pedido>/prato")
     def set_pedido_prato(id_pedido: int):
