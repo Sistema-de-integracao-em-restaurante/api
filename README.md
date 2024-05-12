@@ -21,7 +21,7 @@ docker run --rm -it -p 5000:5000 ro
 ## Exemplo de utilização
 
 ```bash
-$ curl -X GET -H "Content-Type: application/json" localhost:5000/ingrediente -s | jq .
+$ curl -X GET -H "Content-Type: application/json" localhost:5000/api/ingrediente -s | jq .
 ```
 Resultado:
 

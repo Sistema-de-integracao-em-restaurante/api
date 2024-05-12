@@ -24,7 +24,7 @@ def build_routes(session_scope):
                 return {"error": "Ingrediente nao encontrado"}, 404
             return jsonify(ingrediente.serialize())
 
-    @bp.route("", methods=["POST"])
+    @bp.post("")
     def set_ingrediente():
         try:
             request_data = IngredienteCreationSchema().load(request.json)
