@@ -96,9 +96,10 @@ def build_routes(session_scope):
     @bp.delete("<int:id_prato>/ingrediente/<int:id_ingrediente>")
     def delete_ingrediente_prato(id_prato: int, id_ingrediente: int):
         with session_scope() as session:
-            ingrediente_prato = session.query(IngredientePrato).filter(
-                    IngredientePrato.id_prato == id_prato and
-                    IngredientePrato.id_ingrediente == id_ingrediente).first()
+            ingrediente_prato = session.query(IngredientePrato) \
+                .filter(IngredientePrato.id_prato == id_prato) \
+                .filter(IngredientePrato.id_ingrediente == id_ingrediente) \
+                .first()
             if not ingrediente_prato:
                 return {"error": "Relacionamento entre prato e "
                         "ingrediente nao encontrado"}, 404

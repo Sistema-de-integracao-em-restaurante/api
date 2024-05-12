@@ -128,6 +128,7 @@ def test_ingrediente_prato_delete(client, session_scope):
     ingrediente_prato_to_delete = \
         IngredientePrato(id_ingrediente=1, id_prato=1)
     session.query.return_value.filter.return_value \
+           .filter.return_value \
            .first.return_value \
            .serialize.return_value = ingrediente_prato_to_delete.serialize()
 
@@ -135,7 +136,8 @@ def test_ingrediente_prato_delete(client, session_scope):
 
     session.query.assert_called_once_with(IngredientePrato)
     session.query().filter.assert_called_once()
-    session.query().filter().first.assert_called_once()
+    session.query().filter().filter.assert_called_once()
+    session.query().filter().filter().first.assert_called_once()
     session.commit.assert_called_once()
     session.delete.assert_called_once()
     assert response.status_code == 200
