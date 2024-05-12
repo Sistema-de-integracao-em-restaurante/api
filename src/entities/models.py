@@ -60,3 +60,41 @@ class Prato(Base):
                 'created_at': self.created_at,
                 'ingredientes': [i.serialize() for i in self.ingredientes]
         }
+
+
+class PratoPedido(Base):
+    __tablename__ = 'prato_pedido'
+
+    id_prato: Mapped[int] = mapped_column(ForeignKey("prato.id"),
+                                          primary_key=True)
+    id_pedido: Mapped[int] = mapped_column(ForeignKey("pedido.id"),
+                                           primary_key=True)
+    quantidade_prato = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=func.now())
+
+    def serialize(self):
+        return {
+                'id_prato': self.id_prato,
+                'id_pedido': self.id_pedido,
+                'quantidade_prato': self.quantidade_prato,
+                'created_at': self.created_at
+        }
+
+
+class Pedido(Base):
+    __tablename__ = 'pedido'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nome_cliente = Column(String, nullable=False)
+    forma_pagamento = Column(Integer, nullable=False)
+    pratos: Mapped[List["PratoPedido"]] = relationship()
+    created_at = Column(DateTime, default=func.now())
+
+    def serialize(self):
+        return {
+                'id': self.id,
+                'nome_cliente': self.nome_cliente,
+                'forma_pagamento': self.forma_pagamento,
+                'created_at': self.created_at,
+                'pratos': [p.serialize() for p in self.pratos]
+        }

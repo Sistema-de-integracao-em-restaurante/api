@@ -1,8 +1,7 @@
 from flask import jsonify, request
-from flask_cors import cross_origin
 from entities.models import Ingrediente
 from marshmallow import ValidationError
-from schemas.ingrediente import IngredienteCreationSchema
+from schemas.creation import IngredienteCreationSchema
 from flask import Blueprint
 
 
