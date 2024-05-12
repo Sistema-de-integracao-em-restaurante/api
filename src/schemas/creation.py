@@ -36,3 +36,14 @@ class PedidoCreationSchema(Schema):
             error_messages={"required": "Forma de pagamento e obrigatorio",
                             "validator_failed": "Apenas as opcoes: 'Dinheiro'"
                             ", 'Credito' e 'Debito' estao disponíveis"})
+
+
+class PratoPedidoCreationSchema(Schema):
+    id_prato = \
+        fields.Integer(required=True,
+                       error_messages={"required":
+                                       "ID do pedido e obrigatorio"})
+    quantidade_prato = \
+        fields.Integer(required=True,
+                       error_messages={"required":
+                                       "Quantidade pedido e obrigatorio"})
