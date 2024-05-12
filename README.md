@@ -11,9 +11,9 @@ API REST responsável por controlar o armazenamento e recuperação de informaç
 
 É utilizado o [Koyeb](https://app.koyeb.com/) como plataforma de produção para a API e para o banco de dados.
 
-O DB utilizado é uma instância do [postgreSQL](https://www.postgresql.org/), hospedada também no [Koyeb](https://app.koyeb.com/). Foi implementada uma estrutura de (migrations)[https://en.wikipedia.org/wiki/Schema_migration] para controlar as versões das entidades.
+O DB utilizado é uma instância do [postgreSQL](https://www.postgresql.org/), hospedada também no [Koyeb](https://app.koyeb.com/). Foi implementada uma estrutura de [migrations](https://en.wikipedia.org/wiki/Schema_migration) para controlar as versões das entidades.
 
-Essa API tem o objetivo de centralizar as informações relacionadas a pedido de um restaurante em apenas um lugar, fornecendo (webhooks)[https://pt.wikipedia.org/wiki/Webhook] para que outros sistemas possam tomar decisões baseadas na movimentação dos pedidos.
+Essa API tem o objetivo de centralizar as informações relacionadas a pedido de um restaurante em apenas um lugar, fornecendo [webhooks](https://pt.wikipedia.org/wiki/Webhook) para que outros sistemas possam tomar decisões baseadas na movimentação dos pedidos.
 
 ## Executando com Docker
 
