@@ -12,9 +12,11 @@ def session_scope():
 @pytest.fixture()
 def app(session_scope):
     flask_app = build_app(session_scope)
-    flask_app.config.update({
-        "TESTING": True,
-    })
+    flask_app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
     yield flask_app
 
 
