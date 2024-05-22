@@ -48,7 +48,7 @@ def test_ingrediente_set(client, session_scope):
     assert response.json["descricao"] == "descricao"
 
 
-def test_ingrediente_set_withoud_unrequired(client, session_scope):
+def test_ingrediente_set_without_unrequired(client, session_scope):
     with session_scope() as session:
         pass
 
@@ -63,19 +63,19 @@ def test_ingrediente_set_withoud_unrequired(client, session_scope):
     assert response.json["nome"] == "Ingrediente"
 
 
-def test_ingrediente_set_withoud_required(client):
+def test_ingrediente_set_without_required(client):
     response = client.post("/api/ingrediente", json={})
 
     assert response.status_code == 400
 
 
-def test_ingrediente_set_withoud_required_nome(client):
+def test_ingrediente_set_without_required_nome(client):
     response = client.post("/api/ingrediente", json={"medida": "kg"})
 
     assert response.status_code == 400
 
 
-def test_ingrediente_set_withoud_required_medida(client):
+def test_ingrediente_set_without_required_medida(client):
     response = client.post("/api/ingrediente", json={"nome": "Ingrediente"})
 
     assert response.status_code == 400

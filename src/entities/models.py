@@ -164,3 +164,18 @@ class Pedido(Base):
             "preco_total_pedido": self.preco_total_pedido,
             "created_at": str(self.created_at),
         }
+
+
+class Integracao(Base):
+    __tablename__ = "integracao"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    url = Column(String, nullable=False)
+    created_at = Column(DateTime, default=func.now())
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "url": self.url,
+            "created_at": str(self.created_at),
+        }

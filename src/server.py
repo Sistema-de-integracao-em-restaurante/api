@@ -3,6 +3,7 @@ from flask import Flask
 from routes.ingrediente import build_routes as build_ingrediente_routes
 from routes.prato import build_routes as build_prato_routes
 from routes.pedido import build_routes as build_pedido_routes
+from routes.integracao import build_routes as build_integracao_routes
 from entities.session import session_scope
 from flask_cors import CORS
 
@@ -12,6 +13,7 @@ def build_app(session_scope):
     bp_ingrediente = build_ingrediente_routes(session_scope)
     bp_prato = build_prato_routes(session_scope)
     bp_pedido = build_pedido_routes(session_scope)
+    bp_integracao = build_integracao_routes(session_scope)
 
     cors_resources = {
         r"/api/*": {
@@ -27,6 +29,7 @@ def build_app(session_scope):
         app.register_blueprint(bp_ingrediente, url_prefix="/api/ingrediente")
         app.register_blueprint(bp_prato, url_prefix="/api/prato")
         app.register_blueprint(bp_pedido, url_prefix="/api/pedido")
+        app.register_blueprint(bp_integracao, url_prefix="/api/integracao")
 
     @app.route("/api")
     def display_app_data():

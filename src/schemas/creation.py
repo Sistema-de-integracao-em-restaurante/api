@@ -62,3 +62,13 @@ class PratoPedidoCreationSchema(Schema):
         required=True,
         error_messages={"required": "Quantidade pedido e obrigatorio"},
     )
+
+
+class IntegracaoCreationSchema(Schema):
+    url = fields.String(
+        required=True,
+        error_messages={
+            "required": "URL e obrigatorio",
+            "validator_failed": "A URL deve iniciar com formato https://",
+        },
+    )
