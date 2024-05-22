@@ -6,6 +6,15 @@ class IngredienteCreationSchema(Schema):
         required=True, error_messages={"required": "Nome e obrigatorio"}
     )
     descricao = fields.String(required=False, load_default=None)
+    medida = fields.String(
+        required=True,
+        validate=lambda fp: fp in ["g", "kg", "l", "ml"],
+        error_messages={
+            "required": "Medida e obrigatorio",
+            "validator_failed": "Apenas as opcoes: 'g', 'kg', 'l' e 'ml'"
+            " estao disponiveis",
+        },
+    )
 
 
 class IngredientePratoCreationSchema(Schema):
@@ -39,7 +48,7 @@ class PedidoCreationSchema(Schema):
         error_messages={
             "required": "Forma de pagamento e obrigatorio",
             "validator_failed": "Apenas as opcoes: 'Dinheiro'"
-            ", 'Credito' e 'Debito' estao disponíveis",
+            ", 'Credito' e 'Debito' estao disponiveis",
         },
     )
 

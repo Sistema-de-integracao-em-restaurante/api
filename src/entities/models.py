@@ -52,6 +52,7 @@ class Ingrediente(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     nome = Column(String, nullable=False)
     descricao = Column(Integer)
+    medida = Column(String, nullable=False)
     created_at = Column(DateTime, default=func.now())
 
     def serialize(self):
@@ -59,6 +60,7 @@ class Ingrediente(Base):
             "id": self.id,
             "nome": self.nome,
             "descricao": self.descricao,
+            "medida": self.medida,
             "created_at": self.created_at,
         }
 
@@ -117,7 +119,7 @@ class Pedido(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nome_cliente = Column(String, nullable=False)
-    forma_pagamento = Column(Integer, nullable=False)
+    forma_pagamento = Column(String, nullable=False)
     pratos: Mapped[List["PratoPedido"]] = relationship()
     created_at = Column(DateTime, default=func.now())
 
