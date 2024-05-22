@@ -1,7 +1,7 @@
 """create e ingrediente table
 
 Revision ID: f02dc2a616f8
-Revises: 
+Revises:
 Create Date: 2024-05-09 19:32:58.825395
 
 """

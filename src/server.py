@@ -13,8 +13,13 @@ def build_app(session_scope):
     bp_prato = build_prato_routes(session_scope)
     bp_pedido = build_pedido_routes(session_scope)
 
-    cors_resources = {r'/api/*': {'origins': 'http://localhost:3000',
-                                  "allow_headers": "*", "expose_headers": "*"}}
+    cors_resources = {
+        r"/api/*": {
+            "origins": "http://localhost:3000",
+            "allow_headers": "*",
+            "expose_headers": "*",
+        }
+    }
 
     CORS(app, resources=cors_resources, supports_credentials=True)
 
@@ -26,16 +31,18 @@ def build_app(session_scope):
     @app.route("/api")
     def display_app_data():
         return {
-                "name": "Restaurant Order API",
-                "version": os.getenv("RO_VERSION", "v0.0.0")
+            "name": "Restaurant Order API",
+            "version": os.getenv("RO_VERSION", "v0.0.0"),
         }
 
     @app.errorhandler(500)
     def error_handler_500(e):
         with session_scope() as session:
             session.rollback()
-            return {"error": "Aconteceu um erro durante o processamento da "
-                    "requisicao. Tente novamente mais tarde"}, 500
+            return {
+                "error": "Aconteceu um erro durante o processamento da "
+                "requisicao. Tente novamente mais tarde"
+            }, 500
 
     return app
 

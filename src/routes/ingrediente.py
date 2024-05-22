@@ -6,7 +6,7 @@ from flask import Blueprint
 
 
 def build_routes(session_scope):
-    bp = Blueprint('bp_ingrediente', __name__)
+    bp = Blueprint("bp_ingrediente", __name__)
 
     @bp.get("")
     def get_ingredientes():
@@ -17,8 +17,9 @@ def build_routes(session_scope):
     @bp.get("<int:id>")
     def get_ingrediente_by_id(id: int):
         with session_scope() as session:
-            ingrediente = session.query(Ingrediente).filter(
-                    Ingrediente.id == id).first()
+            ingrediente = (
+                session.query(Ingrediente).filter(Ingrediente.id == id).first()
+            )
             if not ingrediente:
                 return {"error": "Ingrediente nao encontrado"}, 404
             return jsonify(ingrediente.serialize())
@@ -43,8 +44,9 @@ def build_routes(session_scope):
     @bp.delete("<int:id>")
     def delete_ingrediente(id: int):
         with session_scope() as session:
-            ingrediente = session.query(Ingrediente).filter(
-                    Ingrediente.id == id).first()
+            ingrediente = (
+                session.query(Ingrediente).filter(Ingrediente.id == id).first()
+            )
             if not ingrediente:
                 return {"error": "Ingrediente nao encontrado"}, 404
 

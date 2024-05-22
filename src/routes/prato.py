@@ -1,13 +1,15 @@
 from flask import jsonify, request
 from entities.models import Prato, IngredientePrato, Ingrediente
 from marshmallow import ValidationError
-from schemas.creation import PratoCreationSchema, \
-    IngredientePratoCreationSchema
+from schemas.creation import (
+    PratoCreationSchema,
+    IngredientePratoCreationSchema,
+)
 from flask import Blueprint
 
 
 def build_routes(session_scope):
-    bp = Blueprint('bp_prato', __name__)
+    bp = Blueprint("bp_prato", __name__)
 
     @bp.get("")
     def get_pratos():
@@ -18,8 +20,7 @@ def build_routes(session_scope):
     @bp.get("<int:id>")
     def get_prato_by_id(id: int):
         with session_scope() as session:
-            prato = session.query(Prato).filter(
-                    Prato.id == id).first()
+            prato = session.query(Prato).filter(Prato.id == id).first()
             if not prato:
                 return {"error": "Prato nao encontrado"}, 404
             return jsonify(prato.serialize())
@@ -49,7 +50,8 @@ def build_routes(session_scope):
                 return {"error": "Prato nao encontrado"}, 404
 
             session.query(IngredientePrato).filter(
-                    IngredientePrato.id_prato == id).delete()
+                IngredientePrato.id_prato == id
+            ).delete()
 
             session.delete(prato)
             session.commit()
@@ -58,8 +60,7 @@ def build_routes(session_scope):
     @bp.get("<int:id>/ingrediente")
     def get_ingrediente_prato_by_id(id: int):
         with session_scope() as session:
-            prato = session.query(Prato).filter(
-                    Prato.id == id).first()
+            prato = session.query(Prato).filter(Prato.id == id).first()
             if not prato:
                 return {"error": "Prato nao encontrado"}, 404
             return jsonify([i.serialize() for i in prato.ingredientes])
@@ -79,15 +80,19 @@ def build_routes(session_scope):
             if not prato:
                 return {"error": "Prato nao encontrado"}, 404
 
-            ingrediente = session.query(Ingrediente).filter(
-                    Ingrediente.id == id_ingrediente).first()
+            ingrediente = (
+                session.query(Ingrediente)
+                .filter(Ingrediente.id == id_ingrediente)
+                .first()
+            )
             if not ingrediente:
                 return {"error": "Ingrediente nao encontrado"}, 404
 
-            ingrediente_prato = \
-                IngredientePrato(id_ingrediente=id_ingrediente,
-                                 id_prato=id_prato,
-                                 quantidade_ingrediente=quantidade_ingrediente)
+            ingrediente_prato = IngredientePrato(
+                id_ingrediente=id_ingrediente,
+                id_prato=id_prato,
+                quantidade_ingrediente=quantidade_ingrediente,
+            )
             session.add(ingrediente_prato)
             session.commit()
             session.refresh(prato)
@@ -96,13 +101,17 @@ def build_routes(session_scope):
     @bp.delete("<int:id_prato>/ingrediente/<int:id_ingrediente>")
     def delete_ingrediente_prato(id_prato: int, id_ingrediente: int):
         with session_scope() as session:
-            ingrediente_prato = session.query(IngredientePrato) \
-                .filter(IngredientePrato.id_prato == id_prato) \
-                .filter(IngredientePrato.id_ingrediente == id_ingrediente) \
+            ingrediente_prato = (
+                session.query(IngredientePrato)
+                .filter(IngredientePrato.id_prato == id_prato)
+                .filter(IngredientePrato.id_ingrediente == id_ingrediente)
                 .first()
+            )
             if not ingrediente_prato:
-                return {"error": "Relacionamento entre prato e "
-                        "ingrediente nao encontrado"}, 404
+                return {
+                    "error": "Relacionamento entre prato e "
+                    "ingrediente nao encontrado"
+                }, 404
 
             session.delete(ingrediente_prato)
             session.commit()

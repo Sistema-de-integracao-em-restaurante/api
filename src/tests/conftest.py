@@ -1,20 +1,22 @@
 import pytest
-from unittest.mock import MagicMock
 from server import build_app
+from alchemy_mock.mocking import UnifiedAlchemyMagicMock
 
 
 @pytest.fixture()
 def session_scope():
-    session_scope = MagicMock()
+    session_scope = UnifiedAlchemyMagicMock()
     return session_scope
 
 
 @pytest.fixture()
 def app(session_scope):
     flask_app = build_app(session_scope)
-    flask_app.config.update({
-        "TESTING": True,
-    })
+    flask_app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
     yield flask_app
 
 

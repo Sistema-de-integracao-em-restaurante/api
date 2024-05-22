@@ -1,5 +1,6 @@
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 <br>
 ![CI](https://github.com/Sistema-de-integracao-em-restaurante/api/actions/workflows/ci.yml/badge.svg)
 ![Release](https://github.com/Sistema-de-integracao-em-restaurante/api/actions/workflows/release.yml/badge.svg)
