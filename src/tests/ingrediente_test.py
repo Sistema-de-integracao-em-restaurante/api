@@ -37,7 +37,7 @@ def test_ingrediente_set(client, session_scope):
 
     response = client.post(
         "/api/ingrediente",
-        json={"nome": "Ingrediente", "descricao": "descricao"},
+        json={"nome": "Ingrediente", "descricao": "descricao", "medida": "kg"},
     )
 
     session.add.assert_called_once()
@@ -52,7 +52,9 @@ def test_ingrediente_set_withoud_unrequired(client, session_scope):
     with session_scope() as session:
         pass
 
-    response = client.post("/api/ingrediente", json={"nome": "Ingrediente"})
+    response = client.post(
+        "/api/ingrediente", json={"nome": "Ingrediente", "medida": "l"}
+    )
 
     session.add.assert_called_once()
     session.commit.assert_called_once()
@@ -63,6 +65,27 @@ def test_ingrediente_set_withoud_unrequired(client, session_scope):
 
 def test_ingrediente_set_withoud_required(client):
     response = client.post("/api/ingrediente", json={})
+
+    assert response.status_code == 400
+
+
+def test_ingrediente_set_withoud_required_nome(client):
+    response = client.post("/api/ingrediente", json={"medida": "kg"})
+
+    assert response.status_code == 400
+
+
+def test_ingrediente_set_withoud_required_medida(client):
+    response = client.post("/api/ingrediente", json={"nome": "Ingrediente"})
+
+    assert response.status_code == 400
+
+
+def test_ingrediente_set_incorrect_medida(client):
+    response = client.post(
+        "/api/ingrediente",
+        json={"nome": "Ingrediente", "medida": "t"},
+    )
 
     assert response.status_code == 400
 
