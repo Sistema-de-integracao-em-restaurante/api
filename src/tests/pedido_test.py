@@ -132,8 +132,9 @@ def test_prato_pedido_get_preco_quantidade_info(client, session_scope):
     session.query.assert_called_once_with(Pedido)
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
-    print(response.json)
     assert response.status_code == 200
+    assert response.json["pratos"][0]["preco_total"] == 25
+    assert response.json["pratos"][1]["preco_total"] == 47.1
     assert response.json["preco_total_pedido"] == 72.1
 
 
