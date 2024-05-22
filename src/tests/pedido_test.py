@@ -1,5 +1,6 @@
 from entities.models import Pedido, PratoPedido, Prato
 from unittest import mock
+from unittest.mock import patch, Mock
 
 
 def test_pedido_get(client, session_scope):
@@ -79,16 +80,18 @@ def test_pedido_confirmed(client, session_scope):
     )
     session.add(pedido_to_search)
 
-    response = client.post("/api/pedido/1/confirmado")
+    with patch("requests.post") as mocked_requests_post:
+        mocked_requests_post.return_value = Mock()
+        response = client.post("/api/pedido/1/confirmado")
 
-    session.query.assert_called_once_with(Pedido)
-    session.query().filter.assert_called_once()
-    session.query().filter().first.assert_called_once()
-    session.commit.assert_called_once()
-    assert response.status_code == 200
-    assert response.json["nome_cliente"] == "Cliente"
-    assert response.json["forma_pagamento"] == "Dinheiro"
-    assert response.json["status"] == "c"
+        session.query.assert_called_once_with(Pedido)
+        session.query().filter.assert_called_once()
+        session.query().filter().first.assert_called_once()
+        session.commit.assert_called_once()
+        assert response.status_code == 200
+        assert response.json["nome_cliente"] == "Cliente"
+        assert response.json["forma_pagamento"] == "Dinheiro"
+        assert response.json["status"] == "c"
 
 
 def test_pedido_confirmed_only_when_opened(client, session_scope):
@@ -105,6 +108,7 @@ def test_pedido_confirmed_only_when_opened(client, session_scope):
     session.query.assert_called_once_with(Pedido)
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
+    session.commit.assert_not_called()
     assert response.status_code == 400
 
 
@@ -117,6 +121,7 @@ def test_pedido_confirmed_only_if_found(client, session_scope):
     session.query.assert_called_once_with(Pedido)
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
+    session.commit.assert_not_called()
     assert response.status_code == 404
 
 
@@ -155,6 +160,7 @@ def test_pedido_reopened_only_when_opened(client, session_scope):
     session.query.assert_called_once_with(Pedido)
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
+    session.commit.assert_not_called()
     assert response.status_code == 400
 
 
@@ -167,6 +173,7 @@ def test_pedido_reopened_only_if_found(client, session_scope):
     session.query.assert_called_once_with(Pedido)
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
+    session.commit.assert_not_called()
     assert response.status_code == 404
 
 
