@@ -78,12 +78,13 @@ def build_routes(session_scope):
             session.commit()
 
             # Make integration request
-            pedido_json = pedido.serialize()
+            ingredientes_json = pedido.ingredientes
             requests.post(
                 "https://webhook.site/c1b30cc5-b3cc-4fe6-b0ab-6daa761a9560",
-                json=pedido_json,
+                json=ingredientes_json,
             )
-            return jsonify(pedido.serialize())
+
+            return jsonify(ingredientes_json)
 
     @bp.post("<int:id>/reaberto")
     def set_pedido_status_reopened(id: int):
@@ -97,7 +98,7 @@ def build_routes(session_scope):
                 return {"error": "Pedido ainda nao confirmado"}, 400
             pedido.status = "e"
             session.commit()
-            return jsonify(pedido.serialize())
+            return jsonify(pedido.ingredientes)
 
     @bp.post("<int:id_pedido>/prato")
     def set_pedido_prato(id_pedido: int):

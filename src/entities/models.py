@@ -52,7 +52,7 @@ class Ingrediente(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     nome = Column(String, nullable=False)
     descricao = Column(Integer)
-    medida = Column(String, nullable=False)
+    medida = Column(String, nullable=False, default="g")
     created_at = Column(DateTime, default=func.now())
 
     def serialize(self):
@@ -127,6 +127,32 @@ class Pedido(Base):
     @hybrid_property
     def preco_total_pedido(self):
         return round(sum(acc.preco_total for acc in self.pratos), 2)
+
+    @hybrid_property
+    def ingredientes(self):
+        ingredientes = {}
+        for prato_pedido in self.pratos:
+            quant_prato = prato_pedido.quantidade_prato
+            ingredientes_prato = prato_pedido.prato.ingredientes
+            for ingrediente_prato in ingredientes_prato:
+                quant_ingrediente = ingrediente_prato.quantidade_ingrediente
+                ingrediente = ingrediente_prato.ingrediente
+                ingrediente_id = str(ingrediente.id)
+
+                if ingrediente_id in ingredientes.keys():
+                    ingredientes[ingrediente_id]["quantidade"] += (
+                        quant_ingrediente * quant_prato
+                    )
+                else:
+                    ingredientes[ingrediente_id] = {
+                        "ingrediente": ingrediente.serialize(),
+                        "quantidade": (quant_ingrediente * quant_prato),
+                    }
+        return {
+            "pedido_id": self.id,
+            "pedido_status": self.status,
+            "ingredientes": ingredientes,
+        }
 
     def serialize(self):
         return {
