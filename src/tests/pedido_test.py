@@ -145,8 +145,9 @@ def test_pedido_confirmed(client, session_scope):
         session.commit.assert_called_once()
         assert response.status_code == 200
         assert response.json["pedido_status"] == "c"
-        assert response.json["ingredientes"]["1"]["quantidade"] == 1000
-        assert response.json["ingredientes"]["2"]["quantidade"] == 300
+        assert response.json["ingredientes"][0]["quantidade"] == 1000
+        assert response.json["ingredientes"][1]["quantidade"] == 300
+        assert len(response.json["ingredientes"]) == 2
 
 
 def test_pedido_confirmed_only_when_opened(client, session_scope):

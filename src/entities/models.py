@@ -151,7 +151,7 @@ class Pedido(Base):
         return {
             "pedido_id": self.id,
             "pedido_status": self.status,
-            "ingredientes": ingredientes,
+            "ingredientes": list(ingredientes.values()),
         }
 
     def serialize(self):
