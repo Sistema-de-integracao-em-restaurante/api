@@ -81,7 +81,7 @@ class PratoPedido(Base):
     def preco_total(self):
         if not self.prato:
             return 0
-        return self.prato.preco * self.quantidade_prato
+        return round(self.prato.preco * self.quantidade_prato, 2)
 
     def serialize(self):
         return {
@@ -106,7 +106,7 @@ class Pedido(Base):
 
     @hybrid_property
     def preco_total_pedido(self):
-        return sum(acc.preco_total for acc in self.pratos)
+        return round(sum(acc.preco_total for acc in self.pratos), 2)
 
     def serialize(self):
         return {

@@ -3,10 +3,10 @@ from unittest import mock
 
 
 def test_prato_get(client, session_scope):
-    response = client.get("/api/prato")
-
     with session_scope() as session:
         pass
+
+    response = client.get("/api/prato")
 
     session.query.assert_called_once_with(Prato)
     session.query().all.assert_called_once()
@@ -19,9 +19,7 @@ def test_prato_get_by_id(client, session_scope):
 
     prato_to_search = \
         Prato(id=1, nome="Prato", preco=30.5)
-    session.query.return_value.filter.return_value \
-           .first.return_value \
-           .serialize.return_value = prato_to_search.serialize()
+    session.add(prato_to_search)
 
     response = client.get("/api/prato/1")
 
@@ -34,12 +32,12 @@ def test_prato_get_by_id(client, session_scope):
 
 
 def test_prato_set(client, session_scope):
+    with session_scope() as session:
+        pass
+
     response = client.post(
             "/api/prato",
             json={"nome": "Prato", "preco": 20.2})
-
-    with session_scope() as session:
-        pass
 
     session.add.assert_called_once()
     session.commit.assert_called_once()
@@ -71,9 +69,7 @@ def test_prato_delete(client, session_scope):
 
     prato_to_delete = \
         Prato(id=1, nome="Prato", preco=26.4)
-    session.query.return_value.filter.return_value \
-           .first.return_value \
-           .serialize.return_value = prato_to_delete.serialize()
+    session.add(prato_to_delete)
 
     response = client.delete("/api/prato/1")
 
@@ -81,17 +77,21 @@ def test_prato_delete(client, session_scope):
             [mock.call(Prato), mock.call(IngredientePrato)], any_order=True)
     session.query().filter().first.assert_called_once()
     session.commit.assert_called_once()
-    session.delete.assert_called_once()
+    session.delete.assert_has_calls(
+            [mock.call(), mock.call(prato_to_delete)])
     assert response.status_code == 200
     assert response.json["nome"] == "Prato"
     assert response.json["preco"] == 26.4
 
 
 def test_ingrediente_prato_get(client, session_scope):
-    response = client.get("/api/prato/1/ingrediente")
-
     with session_scope() as session:
         pass
+
+    prato = Prato(id=1, nome="Prato", preco=26.4)
+    session.add(prato)
+
+    response = client.get("/api/prato/1/ingrediente")
 
     session.query.assert_called_once_with(Prato)
     session.query().filter.assert_called_once()
@@ -103,9 +103,10 @@ def test_ingrediente_prato_set(client, session_scope):
     with session_scope() as session:
         pass
 
+    ingrediente = Ingrediente(id=1, nome="Ingrediente", descricao="descricao")
     prato = Prato(id=1, nome="Prato", preco=26.4)
-    session.query.return_value.filter.return_value \
-           .first.return_value = prato
+    session.add(prato)
+    session.add(ingrediente)
 
     response = client.post(
             "/api/prato/1/ingrediente",
@@ -113,7 +114,9 @@ def test_ingrediente_prato_set(client, session_scope):
 
     session.query.assert_has_calls(
             [mock.call(Prato), mock.call(Ingrediente)], any_order=True)
-    session.add.assert_called_once()
+    session.add.assert_has_calls(
+            [mock.call(mock.ANY), mock.call(mock.ANY),
+             mock.call(mock.ANY)])
     session.commit.assert_called_once()
     session.refresh.assert_called_once()
     assert response.status_code == 200
@@ -127,16 +130,13 @@ def test_ingrediente_prato_delete(client, session_scope):
 
     ingrediente_prato_to_delete = \
         IngredientePrato(id_ingrediente=1, id_prato=1)
-    session.query.return_value.filter.return_value \
-           .filter.return_value \
-           .first.return_value \
-           .serialize.return_value = ingrediente_prato_to_delete.serialize()
+    session.add(ingrediente_prato_to_delete)
 
     response = client.delete("/api/prato/1/ingrediente/1")
 
     session.query.assert_called_once_with(IngredientePrato)
-    session.query().filter.assert_called_once()
-    session.query().filter().filter.assert_called_once()
+    session.query().filter().filter.assert_has_calls(
+            [mock.call(mock.ANY, mock.ANY), mock.call()], any_order=True)
     session.query().filter().filter().first.assert_called_once()
     session.commit.assert_called_once()
     session.delete.assert_called_once()
