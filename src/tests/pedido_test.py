@@ -18,7 +18,7 @@ def test_pedido_get_by_id(client, session_scope):
         pass
 
     pedido_to_search = Pedido(
-        id=1, nome_cliente="Pedido", forma_pagamento="Dinheiro"
+        id=1, nome_cliente="Cliente", forma_pagamento="Dinheiro"
     )
     session.add(pedido_to_search)
 
@@ -28,7 +28,7 @@ def test_pedido_get_by_id(client, session_scope):
     session.query().filter.assert_called_once()
     session.query().filter().first.assert_called_once()
     assert response.status_code == 200
-    assert response.json["nome_cliente"] == "Pedido"
+    assert response.json["nome_cliente"] == "Cliente"
     assert response.json["forma_pagamento"] == "Dinheiro"
 
 
@@ -38,14 +38,14 @@ def test_pedido_set(client, session_scope):
 
     response = client.post(
         "/api/pedido",
-        json={"nome_cliente": "Pedido", "forma_pagamento": "Credito"},
+        json={"nome_cliente": "Cliente", "forma_pagamento": "Credito"},
     )
 
     session.add.assert_called_once()
     session.commit.assert_called_once()
     session.refresh.assert_called_once()
     assert response.status_code == 200
-    assert response.json["nome_cliente"] == "Pedido"
+    assert response.json["nome_cliente"] == "Cliente"
     assert response.json["forma_pagamento"] == "Credito"
 
 
@@ -68,6 +68,106 @@ def test_pedido_set_incorrect_forma_pagamento(client):
     )
 
     assert response.status_code == 400
+
+
+def test_pedido_confirmed(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    pedido_to_search = Pedido(
+        id=1, nome_cliente="Cliente", forma_pagamento="Dinheiro", status="e"
+    )
+    session.add(pedido_to_search)
+
+    response = client.post("/api/pedido/1/confirmado")
+
+    session.query.assert_called_once_with(Pedido)
+    session.query().filter.assert_called_once()
+    session.query().filter().first.assert_called_once()
+    session.commit.assert_called_once()
+    assert response.status_code == 200
+    assert response.json["nome_cliente"] == "Cliente"
+    assert response.json["forma_pagamento"] == "Dinheiro"
+    assert response.json["status"] == "c"
+
+
+def test_pedido_confirmed_only_when_opened(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    pedido_to_search = Pedido(
+        id=1, nome_cliente="Cliente", forma_pagamento="Dinheiro", status="c"
+    )
+    session.add(pedido_to_search)
+
+    response = client.post("/api/pedido/1/confirmado")
+
+    session.query.assert_called_once_with(Pedido)
+    session.query().filter.assert_called_once()
+    session.query().filter().first.assert_called_once()
+    assert response.status_code == 400
+
+
+def test_pedido_confirmed_only_if_found(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    response = client.post("/api/pedido/1/confirmado")
+
+    session.query.assert_called_once_with(Pedido)
+    session.query().filter.assert_called_once()
+    session.query().filter().first.assert_called_once()
+    assert response.status_code == 404
+
+
+def test_pedido_reopened(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    pedido_to_search = Pedido(
+        id=1, nome_cliente="Cliente", forma_pagamento="Debito", status="c"
+    )
+    session.add(pedido_to_search)
+
+    response = client.post("/api/pedido/1/reaberto")
+
+    session.query.assert_called_once_with(Pedido)
+    session.query().filter.assert_called_once()
+    session.query().filter().first.assert_called_once()
+    session.commit.assert_called_once()
+    assert response.status_code == 200
+    assert response.json["nome_cliente"] == "Cliente"
+    assert response.json["forma_pagamento"] == "Debito"
+    assert response.json["status"] == "e"
+
+
+def test_pedido_reopened_only_when_opened(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    pedido_to_search = Pedido(
+        id=1, nome_cliente="Cliente", forma_pagamento="Dinheiro", status="e"
+    )
+    session.add(pedido_to_search)
+
+    response = client.post("/api/pedido/1/reaberto")
+
+    session.query.assert_called_once_with(Pedido)
+    session.query().filter.assert_called_once()
+    session.query().filter().first.assert_called_once()
+    assert response.status_code == 400
+
+
+def test_pedido_reopened_only_if_found(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    response = client.post("/api/pedido/1/reaberto")
+
+    session.query.assert_called_once_with(Pedido)
+    session.query().filter.assert_called_once()
+    session.query().filter().first.assert_called_once()
+    assert response.status_code == 404
 
 
 def test_pedido_delete(client, session_scope):
@@ -149,7 +249,7 @@ def test_prato_pedido_set(client, session_scope):
         pass
 
     prato = Prato(id=1, nome="Prato", preco=30.4)
-    pedido = Pedido(id=1, nome_cliente="Pedido", forma_pagamento="Dinheiro")
+    pedido = Pedido(id=1, nome_cliente="Cliente", forma_pagamento="Dinheiro")
     session.add(pedido)
     session.add(prato)
 
@@ -166,8 +266,30 @@ def test_prato_pedido_set(client, session_scope):
     session.commit.assert_called_once()
     session.refresh.assert_called_once()
     assert response.status_code == 200
-    assert response.json["nome_cliente"] == "Pedido"
+    assert response.json["nome_cliente"] == "Cliente"
     assert response.json["forma_pagamento"] == "Dinheiro"
+
+
+def test_prato_pedido_set_status_validation(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    prato = Prato(id=1, nome="Prato", preco=23.3)
+    pedido = Pedido(
+        id=1, nome_cliente="Cliente", forma_pagamento="Credito", status="c"
+    )
+    session.add(pedido)
+    session.add(prato)
+
+    response = client.post(
+        "/api/pedido/1/prato", json={"id_prato": 1, "quantidade_prato": 2}
+    )
+
+    session.query.assert_called_once()
+    session.add.assert_has_calls([mock.call(mock.ANY), mock.call(mock.ANY)])
+    session.commit.assert_not_called()
+    session.refresh.assert_not_called()
+    assert response.status_code == 400
 
 
 def test_prato_pedido_delete(client, session_scope):

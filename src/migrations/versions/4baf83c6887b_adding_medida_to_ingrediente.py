@@ -22,7 +22,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.add_column(
         "ingrediente",
-        sa.Column("medida", sa.String(50), nullable=True, server_default="g"),
+        sa.Column("medida", sa.String(50), nullable=False, server_default="g"),
     )
     pass
 

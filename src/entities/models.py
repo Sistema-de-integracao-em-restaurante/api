@@ -42,7 +42,7 @@ class IngredientePrato(Base):
                 if self.ingrediente is not None
                 else {}
             ),
-            "created_at": self.created_at,
+            "created_at": str(self.created_at),
         }
 
 
@@ -61,7 +61,7 @@ class Ingrediente(Base):
             "nome": self.nome,
             "descricao": self.descricao,
             "medida": self.medida,
-            "created_at": self.created_at,
+            "created_at": str(self.created_at),
         }
 
 
@@ -80,7 +80,7 @@ class Prato(Base):
             "nome": self.nome,
             "preco": self.preco,
             "ingredientes": [i.serialize() for i in self.ingredientes],
-            "created_at": self.created_at,
+            "created_at": str(self.created_at),
         }
 
 
@@ -110,7 +110,7 @@ class PratoPedido(Base):
             "quantidade_prato": self.quantidade_prato,
             "prato": self.prato.serialize() if self.prato is not None else {},
             "preco_total": self.preco_total,
-            "created_at": self.created_at,
+            "created_at": str(self.created_at),
         }
 
 
@@ -120,6 +120,7 @@ class Pedido(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     nome_cliente = Column(String, nullable=False)
     forma_pagamento = Column(String, nullable=False)
+    status = Column(String, nullable=False, default="e")
     pratos: Mapped[List["PratoPedido"]] = relationship()
     created_at = Column(DateTime, default=func.now())
 
@@ -132,7 +133,8 @@ class Pedido(Base):
             "id": self.id,
             "nome_cliente": self.nome_cliente,
             "forma_pagamento": self.forma_pagamento,
+            "status": self.status,
             "pratos": [p.serialize() for p in self.pratos],
             "preco_total_pedido": self.preco_total_pedido,
-            "created_at": self.created_at,
+            "created_at": str(self.created_at),
         }
