@@ -10,7 +10,8 @@ class IngredienteCreationSchema(Schema):
 
 class IngredientePratoCreationSchema(Schema):
     id_ingrediente = fields.Integer(
-        required=True, error_messages={"required": "ID do ingrediente e obrigatorio"}
+        required=True,
+        error_messages={"required": "ID do ingrediente e obrigatorio"},
     )
     quantidade_ingrediente = fields.Integer(
         required=True,
@@ -29,7 +30,8 @@ class PratoCreationSchema(Schema):
 
 class PedidoCreationSchema(Schema):
     nome_cliente = fields.String(
-        required=True, error_messages={"required": "Nome do cliente e obrigatorio"}
+        required=True,
+        error_messages={"required": "Nome do cliente e obrigatorio"},
     )
     forma_pagamento = fields.String(
         required=True,
@@ -44,8 +46,10 @@ class PedidoCreationSchema(Schema):
 
 class PratoPedidoCreationSchema(Schema):
     id_prato = fields.Integer(
-        required=True, error_messages={"required": "ID do pedido e obrigatorio"}
+        required=True,
+        error_messages={"required": "ID do pedido e obrigatorio"},
     )
     quantidade_prato = fields.Integer(
-        required=True, error_messages={"required": "Quantidade pedido e obrigatorio"}
+        required=True,
+        error_messages={"required": "Quantidade pedido e obrigatorio"},
     )

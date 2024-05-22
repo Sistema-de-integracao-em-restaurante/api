@@ -16,7 +16,9 @@ def test_ingrediente_get_by_id(client, session_scope):
     with session_scope() as session:
         pass
 
-    ingrediente_to_search = Ingrediente(id=1, nome="Ingrediente", descricao="descricao")
+    ingrediente_to_search = Ingrediente(
+        id=1, nome="Ingrediente", descricao="descricao"
+    )
     session.add(ingrediente_to_search)
 
     response = client.get("/api/ingrediente/1")
@@ -34,7 +36,8 @@ def test_ingrediente_set(client, session_scope):
         pass
 
     response = client.post(
-        "/api/ingrediente", json={"nome": "Ingrediente", "descricao": "descricao"}
+        "/api/ingrediente",
+        json={"nome": "Ingrediente", "descricao": "descricao"},
     )
 
     session.add.assert_called_once()
@@ -68,7 +71,9 @@ def test_ingrediente_delete(client, session_scope):
     with session_scope() as session:
         pass
 
-    ingrediente_to_delete = Ingrediente(id=1, nome="Ingrediente", descricao="descricao")
+    ingrediente_to_delete = Ingrediente(
+        id=1, nome="Ingrediente", descricao="descricao"
+    )
     session.add(ingrediente_to_delete)
 
     response = client.delete("/api/ingrediente/1")

@@ -31,7 +31,9 @@ def build_routes(session_scope):
 
         nome_cliente = request_data["nome_cliente"]
         forma_pagamento = request_data["forma_pagamento"]
-        pedido = Pedido(nome_cliente=nome_cliente, forma_pagamento=forma_pagamento)
+        pedido = Pedido(
+            nome_cliente=nome_cliente, forma_pagamento=forma_pagamento
+        )
 
         with session_scope() as session:
             session.add(pedido)
@@ -46,7 +48,9 @@ def build_routes(session_scope):
             if not pedido:
                 return {"error": "Pedido nao encontrado"}, 404
 
-            session.query(PratoPedido).filter(PratoPedido.id_pedido == id).delete()
+            session.query(PratoPedido).filter(
+                PratoPedido.id_pedido == id
+            ).delete()
 
             session.delete(pedido)
             session.commit()
@@ -71,7 +75,9 @@ def build_routes(session_scope):
         quantidade_prato = request_data["quantidade_prato"]
 
         with session_scope() as session:
-            pedido = session.query(Pedido).filter(Pedido.id == id_pedido).first()
+            pedido = (
+                session.query(Pedido).filter(Pedido.id == id_pedido).first()
+            )
             if not pedido:
                 return {"error": "Pedido nao encontrado"}, 404
 
@@ -100,7 +106,8 @@ def build_routes(session_scope):
             )
             if not pedido_prato:
                 return {
-                    "error": "Relacionamento entre prato e " "pedido nao encontrado"
+                    "error": "Relacionamento entre prato e "
+                    "pedido nao encontrado"
                 }, 404
 
             session.delete(pedido_prato)

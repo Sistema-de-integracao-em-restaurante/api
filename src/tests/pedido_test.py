@@ -17,7 +17,9 @@ def test_pedido_get_by_id(client, session_scope):
     with session_scope() as session:
         pass
 
-    pedido_to_search = Pedido(id=1, nome_cliente="Pedido", forma_pagamento="Dinheiro")
+    pedido_to_search = Pedido(
+        id=1, nome_cliente="Pedido", forma_pagamento="Dinheiro"
+    )
     session.add(pedido_to_search)
 
     response = client.get("/api/pedido/1")
@@ -35,7 +37,8 @@ def test_pedido_set(client, session_scope):
         pass
 
     response = client.post(
-        "/api/pedido", json={"nome_cliente": "Pedido", "forma_pagamento": "Credito"}
+        "/api/pedido",
+        json={"nome_cliente": "Pedido", "forma_pagamento": "Credito"},
     )
 
     session.add.assert_called_once()
@@ -60,7 +63,8 @@ def test_pedido_set_withoud_required_2(client):
 
 def test_pedido_set_incorrect_forma_pagamento(client):
     response = client.post(
-        "/api/pedido", json={"nome_cliente": "Pedido1", "forma_pagamento": "pix"}
+        "/api/pedido",
+        json={"nome_cliente": "Pedido1", "forma_pagamento": "pix"},
     )
 
     assert response.status_code == 400
@@ -92,7 +96,9 @@ def test_prato_pedido_get(client, session_scope):
     with session_scope() as session:
         pass
 
-    pedido = Pedido(id=1, nome_cliente="Nome Cliente", forma_pagamento="Dinheiro")
+    pedido = Pedido(
+        id=1, nome_cliente="Nome Cliente", forma_pagamento="Dinheiro"
+    )
     session.add(pedido)
 
     response = client.get("/api/pedido/1/prato")

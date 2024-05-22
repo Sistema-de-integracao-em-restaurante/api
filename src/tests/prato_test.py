@@ -122,7 +122,9 @@ def test_ingrediente_prato_delete(client, session_scope):
     with session_scope() as session:
         pass
 
-    ingrediente_prato_to_delete = IngredientePrato(id_ingrediente=1, id_prato=1)
+    ingrediente_prato_to_delete = IngredientePrato(
+        id_ingrediente=1, id_prato=1
+    )
     session.add(ingrediente_prato_to_delete)
 
     response = client.delete("/api/prato/1/ingrediente/1")

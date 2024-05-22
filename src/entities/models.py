@@ -1,6 +1,19 @@
 from typing import List
-from sqlalchemy import Column, Float, ForeignKey, String, Integer, DateTime, func
-from sqlalchemy.orm import declarative_base, relationship, mapped_column, Mapped
+from sqlalchemy import (
+    Column,
+    Float,
+    ForeignKey,
+    String,
+    Integer,
+    DateTime,
+    func,
+)
+from sqlalchemy.orm import (
+    declarative_base,
+    relationship,
+    mapped_column,
+    Mapped,
+)
 from sqlalchemy.ext.hybrid import hybrid_property
 
 Base = declarative_base()
@@ -12,7 +25,9 @@ class IngredientePrato(Base):
     id_ingrediente: Mapped[int] = mapped_column(
         ForeignKey("ingrediente.id"), primary_key=True
     )
-    id_prato: Mapped[int] = mapped_column(ForeignKey("prato.id"), primary_key=True)
+    id_prato: Mapped[int] = mapped_column(
+        ForeignKey("prato.id"), primary_key=True
+    )
     quantidade_ingrediente = Column(Integer, nullable=False)
     ingrediente: Mapped["Ingrediente"] = relationship()
     created_at = Column(DateTime, default=func.now())
@@ -23,7 +38,9 @@ class IngredientePrato(Base):
             "id_prato": self.id_prato,
             "quantidade_ingrediente": self.quantidade_ingrediente,
             "ingrediente": (
-                self.ingrediente.serialize() if self.ingrediente is not None else {}
+                self.ingrediente.serialize()
+                if self.ingrediente is not None
+                else {}
             ),
             "created_at": self.created_at,
         }
@@ -68,8 +85,12 @@ class Prato(Base):
 class PratoPedido(Base):
     __tablename__ = "prato_pedido"
 
-    id_prato: Mapped[int] = mapped_column(ForeignKey("prato.id"), primary_key=True)
-    id_pedido: Mapped[int] = mapped_column(ForeignKey("pedido.id"), primary_key=True)
+    id_prato: Mapped[int] = mapped_column(
+        ForeignKey("prato.id"), primary_key=True
+    )
+    id_pedido: Mapped[int] = mapped_column(
+        ForeignKey("pedido.id"), primary_key=True
+    )
     quantidade_prato = Column(Integer, nullable=False)
     prato: Mapped["Prato"] = relationship()
     created_at = Column(DateTime, default=func.now())
