@@ -3,6 +3,7 @@ from sqlalchemy import Column, Float, ForeignKey, String, Integer, DateTime, \
      func
 from sqlalchemy.orm import declarative_base, relationship, mapped_column, \
      Mapped
+from sqlalchemy.ext.hybrid import hybrid_property
 
 Base = declarative_base()
 
@@ -15,6 +16,7 @@ class IngredientePrato(Base):
     id_prato: Mapped[int] = mapped_column(ForeignKey("prato.id"),
                                           primary_key=True)
     quantidade_ingrediente = Column(Integer, nullable=False)
+    ingrediente: Mapped["Ingrediente"] = relationship()
     created_at = Column(DateTime, default=func.now())
 
     def serialize(self):
@@ -22,6 +24,8 @@ class IngredientePrato(Base):
                 'id_ingrediente': self.id_ingrediente,
                 'id_prato': self.id_prato,
                 'quantidade_ingrediente': self.quantidade_ingrediente,
+                'ingrediente': self.ingrediente.serialize()
+                if self.ingrediente is not None else {},
                 'created_at': self.created_at
         }
 
@@ -57,8 +61,8 @@ class Prato(Base):
                 'id': self.id,
                 'nome': self.nome,
                 'preco': self.preco,
-                'created_at': self.created_at,
-                'ingredientes': [i.serialize() for i in self.ingredientes]
+                'ingredientes': [i.serialize() for i in self.ingredientes],
+                'created_at': self.created_at
         }
 
 
@@ -70,13 +74,23 @@ class PratoPedido(Base):
     id_pedido: Mapped[int] = mapped_column(ForeignKey("pedido.id"),
                                            primary_key=True)
     quantidade_prato = Column(Integer, nullable=False)
+    prato: Mapped["Prato"] = relationship()
     created_at = Column(DateTime, default=func.now())
+
+    @hybrid_property
+    def preco_total(self):
+        if not self.prato:
+            return 0
+        return self.prato.preco * self.quantidade_prato
 
     def serialize(self):
         return {
                 'id_prato': self.id_prato,
                 'id_pedido': self.id_pedido,
                 'quantidade_prato': self.quantidade_prato,
+                'prato': self.prato.serialize()
+                if self.prato is not None else {},
+                'preco_total': self.preco_total,
                 'created_at': self.created_at
         }
 
@@ -90,11 +104,16 @@ class Pedido(Base):
     pratos: Mapped[List["PratoPedido"]] = relationship()
     created_at = Column(DateTime, default=func.now())
 
+    @hybrid_property
+    def preco_total_pedido(self):
+        return sum(acc.preco_total for acc in self.pratos)
+
     def serialize(self):
         return {
                 'id': self.id,
                 'nome_cliente': self.nome_cliente,
                 'forma_pagamento': self.forma_pagamento,
-                'created_at': self.created_at,
-                'pratos': [p.serialize() for p in self.pratos]
+                'pratos': [p.serialize() for p in self.pratos],
+                'preco_total_pedido': self.preco_total_pedido,
+                'created_at': self.created_at
         }
