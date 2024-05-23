@@ -129,6 +129,16 @@ class Pedido(Base):
         return round(sum(acc.preco_total for acc in self.pratos), 2)
 
     @hybrid_property
+    def is_confirmado(self):
+        return self.status == "c"
+        pass
+
+    @hybrid_property
+    def is_aberto(self):
+        return self.status == "e"
+        pass
+
+    @hybrid_property
     def ingredientes(self):
         ingredientes = {}
         for prato_pedido in self.pratos:
