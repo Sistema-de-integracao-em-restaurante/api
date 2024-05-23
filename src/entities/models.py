@@ -29,7 +29,7 @@ class IngredientePrato(Base):
         ForeignKey("prato.id"), primary_key=True
     )
     quantidade_ingrediente = Column(Integer, nullable=False)
-    ingrediente: Mapped["Ingrediente"] = relationship()
+    ingrediente: Mapped["Ingrediente"] = relationship(lazy="subquery")
     created_at = Column(DateTime, default=func.now())
 
     def serialize(self):
@@ -94,7 +94,7 @@ class PratoPedido(Base):
         ForeignKey("pedido.id"), primary_key=True
     )
     quantidade_prato = Column(Integer, nullable=False)
-    prato: Mapped["Prato"] = relationship()
+    prato: Mapped["Prato"] = relationship(lazy="subquery")
     created_at = Column(DateTime, default=func.now())
 
     @hybrid_property

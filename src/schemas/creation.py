@@ -9,10 +9,10 @@ class IngredienteCreationSchema(Schema):
     descricao = fields.String(required=False, load_default=None)
     medida = fields.String(
         required=True,
-        validate=lambda fp: fp in ["g", "kg", "l", "ml"],
+        validate=lambda u: u in ["g", "kg", "l", "ml", "un"],
         error_messages={
             "required": "Medida e obrigatorio",
-            "validator_failed": "Apenas as opcoes: 'g', 'kg', 'l' e 'ml'"
+            "validator_failed": "Apenas as opcoes: 'g', 'kg', 'l', 'ml' e 'un'"
             " estao disponiveis",
         },
     )

@@ -85,9 +85,7 @@ def build_routes(session_scope):
         with session_scope() as session:
             pedido = session.query(Pedido).filter(Pedido.id == id).first()
             if not pedido:
-                return {
-                    "error": "Pedido nao encontrado ou ainda nao confirmado"
-                }, 404
+                return {"error": "Pedido nao encontrado"}, 404
             if pedido.is_aberto:
                 return {"error": "Pedido ainda nao confirmado"}, 400
             pedido.status = "e"
