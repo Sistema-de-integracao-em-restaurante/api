@@ -7,4 +7,7 @@ def request_to_integration_url(session, pedido: Pedido) -> None:
     if not integracao or not integracao.url:
         return
 
-    requests.post(integracao.url, json=pedido.ingredientes)
+    try:
+        requests.post(integracao.url, json=pedido.ingredientes)
+    except Exception:
+        return
