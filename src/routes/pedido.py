@@ -1,10 +1,9 @@
-import requests
-import json
 from flask import jsonify, request
 from entities.models import Pedido, PratoPedido, Prato
 from marshmallow import ValidationError
 from schemas.creation import PedidoCreationSchema, PratoPedidoCreationSchema
 from flask import Blueprint
+from entities.usecases import request_to_integration_url
 
 
 def build_routes(session_scope):
@@ -77,14 +76,9 @@ def build_routes(session_scope):
             pedido.status = "c"
             session.commit()
 
-            # Make integration request
-            ingredientes_json = pedido.ingredientes
-            requests.post(
-                "https://webhook.site/c1b30cc5-b3cc-4fe6-b0ab-6daa761a9560",
-                json=ingredientes_json,
-            )
+            request_to_integration_url(session, pedido)
 
-            return jsonify(ingredientes_json)
+            return jsonify(pedido.ingredientes)
 
     @bp.post("<int:id>/reaberto")
     def set_pedido_status_reopened(id: int):

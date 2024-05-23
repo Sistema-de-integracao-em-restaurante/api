@@ -1,3 +1,4 @@
+import validators
 from marshmallow import Schema, fields
 
 
@@ -65,10 +66,18 @@ class PratoPedidoCreationSchema(Schema):
 
 
 class IntegracaoCreationSchema(Schema):
+    def validateURL(url: str) -> bool:
+        result = validators.url(url)
+        return (
+            not isinstance(result, validators.ValidationError)
+            and result is True
+        )
+
     url = fields.String(
         required=True,
+        validate=validateURL,
         error_messages={
             "required": "URL e obrigatorio",
-            "validator_failed": "A URL deve iniciar com formato https://",
+            "validator_failed": "A URL nao e valida",
         },
     )

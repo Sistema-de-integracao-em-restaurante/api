@@ -16,3 +16,4 @@ flask-cors==1.10.3
 alchemy-mock==0.4.3
 black==24.4.2
 requests
+validators

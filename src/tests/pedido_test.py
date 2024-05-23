@@ -4,6 +4,7 @@ from entities.models import (
     Prato,
     Ingrediente,
     IngredientePrato,
+    Integracao,
 )
 from unittest import mock
 from unittest.mock import patch, Mock
@@ -139,15 +140,65 @@ def test_pedido_confirmed(client, session_scope):
         mocked_requests_post.return_value = Mock()
         response = client.post("/api/pedido/1/confirmado")
 
-        session.query.assert_called_once_with(Pedido)
+        session.query.assert_has_calls(
+            [mock.call(Pedido), mock.call(Integracao)], any_order=True
+        )
         session.query().filter.assert_called_once()
-        session.query().filter().first.assert_called_once()
+        session.query().filter().first.assert_has_calls(
+            [mock.call(), mock.call()]
+        )
         session.commit.assert_called_once()
         assert response.status_code == 200
         assert response.json["pedido_status"] == "c"
         assert response.json["ingredientes"][0]["quantidade"] == 1000
         assert response.json["ingredientes"][1]["quantidade"] == 300
         assert len(response.json["ingredientes"]) == 2
+
+
+def test_pedido_confirmed_integracao_request(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    integracao = Integracao(url="https://some-url.com")
+
+    pedido = Pedido(
+        id=1,
+        nome_cliente="Nome Cliente",
+        forma_pagamento="Dinheiro",
+        status="e",
+    )
+
+    session.add(integracao)
+    session.add(pedido)
+
+    with patch("requests.post") as mocked_requests_post:
+        mocked_requests_post.return_value = Mock()
+        response = client.post("/api/pedido/1/confirmado")
+        mocked_requests_post.assert_called_once_with(
+            "https://some-url.com",
+            json={"pedido_id": 1, "pedido_status": "c", "ingredientes": []},
+        )
+        assert response.status_code == 200
+
+
+def test_pedido_confirmed_integracao_no_request(client, session_scope):
+    with session_scope() as session:
+        pass
+
+    pedido = Pedido(
+        id=1,
+        nome_cliente="Cliente Exemplo",
+        forma_pagamento="Credito",
+        status="e",
+    )
+
+    session.add(pedido)
+
+    with patch("requests.post") as mocked_requests_post:
+        mocked_requests_post.return_value = Mock()
+        response = client.post("/api/pedido/1/confirmado")
+        mocked_requests_post.assert_not_called()
+        assert response.status_code == 200
 
 
 def test_pedido_confirmed_only_when_opened(client, session_scope):
