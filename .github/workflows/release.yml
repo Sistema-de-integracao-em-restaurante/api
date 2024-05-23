@@ -36,6 +36,7 @@ jobs:
             ${{ steps.github_release.outputs.changelog }}
 
             Image available on: https://hub.docker.com/repository/docker/irmaospuc/sistema-de-integracao-em-restaurantes-api
+            Documentation: https://4irmaospucs-organization.gitbook.io/api-ingteracao-em-restaurantes/
           draft: false
           prerelease: false
 

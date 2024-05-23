@@ -1,3 +1,4 @@
+import validators
 from marshmallow import Schema, fields
 
 
@@ -8,10 +9,10 @@ class IngredienteCreationSchema(Schema):
     descricao = fields.String(required=False, load_default=None)
     medida = fields.String(
         required=True,
-        validate=lambda fp: fp in ["g", "kg", "l", "ml"],
+        validate=lambda u: u in ["g", "kg", "l", "ml", "un"],
         error_messages={
             "required": "Medida e obrigatorio",
-            "validator_failed": "Apenas as opcoes: 'g', 'kg', 'l' e 'ml'"
+            "validator_failed": "Apenas as opcoes: 'g', 'kg', 'l', 'ml' e 'un'"
             " estao disponiveis",
         },
     )
@@ -61,4 +62,22 @@ class PratoPedidoCreationSchema(Schema):
     quantidade_prato = fields.Integer(
         required=True,
         error_messages={"required": "Quantidade pedido e obrigatorio"},
+    )
+
+
+class IntegracaoCreationSchema(Schema):
+    def validateURL(url: str) -> bool:
+        result = validators.url(url)
+        return (
+            not isinstance(result, validators.ValidationError)
+            and result is True
+        )
+
+    url = fields.String(
+        required=True,
+        validate=validateURL,
+        error_messages={
+            "required": "URL e obrigatorio",
+            "validator_failed": "A URL nao e valida",
+        },
     )

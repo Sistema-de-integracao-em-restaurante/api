@@ -33,7 +33,10 @@ def build_routes(session_scope):
 
         nome = request_data["nome"]
         descricao = request_data["descricao"]
-        ingrediente = Ingrediente(nome=nome, descricao=descricao)
+        medida = request_data["medida"]
+        ingrediente = Ingrediente(
+            nome=nome, descricao=descricao, medida=medida
+        )
 
         with session_scope() as session:
             session.add(ingrediente)
