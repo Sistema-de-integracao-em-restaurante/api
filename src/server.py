@@ -17,7 +17,10 @@ def build_app(session_scope):
 
     cors_resources = {
         r"/api/*": {
-            "origins": "http://localhost:3000",
+            "origins": [
+                "http://localhost:3000",
+                "https://sistema-de-integracao-em-restaurante.github.io/",
+            ],
             "allow_headers": "*",
             "expose_headers": "*",
         }
